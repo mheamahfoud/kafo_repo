@@ -1,0 +1,31 @@
+.card {
+    margin: 50px 0 0;
+  }
+  
+  .form-control {
+    padding: .375rem 0;
+    border: none;
+  }
+  
+  .preview img {
+    max-width: 100px;
+  }
+  
+  .multi-preview img {
+    max-width: 100px;
+    display: flex;
+    padding: 5px;
+  }
+  img:hover {
+    background: #b2b2b9;
+    opacity: 0.5;
+  }
+  
+  
+  
+
+  
+  .Form:hover > .btn {
+    opacity: 1;
+  }
+  

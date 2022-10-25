@@ -1,0 +1,23 @@
+.dialog {
+    box-shadow: 0 8px 6px -6px black;
+    position: static;
+    left: 20%;
+    top: 10%;
+  }
+  
+  .image {
+    max-width: 150px !important;
+  }
+  .modal-image{
+    max-height: 150px !important;
+  }
+  .__react_modal_image__modal_container{
+    height: 400px !important;
+    max-width: 400px !important;
+  }
+  /* #react-modal-image-img {
+    width: 100%;
+    height: auto;
+    
+  } */
+  

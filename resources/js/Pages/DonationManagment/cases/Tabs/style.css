@@ -1,0 +1,39 @@
+.dialog {
+    box-shadow: 0 8px 6px -6px black;
+    position: static;
+    left: 20%;
+    top: 10%;
+  }
+  
+  .image {
+    width: 300px;
+  }
+
+  /* #react-modal-image-img {
+    width: 100%;
+    height: auto;
+    
+  } */
+
+  .video-responsive {
+    overflow: hidden;
+    padding-bottom: 56.25%;
+    position: relative;
+    height: 0;
+  }
+  
+  .video-responsive iframe {
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+  }
+  
+  .image-gallery-thumbnails-container{
+    width: 1000px;
+  }
+
+  /* .image-gallery-image{
+    height: calc(100vh-110px);
+  } */

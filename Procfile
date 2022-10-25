@@ -1,0 +1,1 @@
+351551web: vendor/bin/heroku-php-nginx public/
