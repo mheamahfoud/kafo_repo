@@ -38,4 +38,6 @@ interface CaseRepositoryInterface extends EloquentRepositoryInterface {
     public function CheckExist($case_id): ?bool;
 
     public function GetDonors();
+
+    public function checkDonationCaseByDonor($case_id,$donor_id): bool;
 }

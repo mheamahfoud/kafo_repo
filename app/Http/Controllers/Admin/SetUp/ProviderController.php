@@ -92,7 +92,7 @@ class ProviderController extends Controller
                 $data['created_at'] = Carbon::now();
                 $data['created_by'] = Auth::guard('api')->user()->id;
                 $provider = Provider::create($data);
-              
+               
                 $image_path ="";
              if (isset($request->image)) {
                        Storage::disk('provider_files')->makeDirectory($provider->id);
@@ -107,7 +107,7 @@ class ProviderController extends Controller
                         $provider->update($data);
                 }
                
-                DB::commit();
+              DB::commit();
                 //$driver_media = Provider::where('id', $provider->id )->with( ['media'])->first();
                 $provider->setAttribute('created_by', Auth::guard('api')->user()->full_name);
                 $provider->setAttribute('is_active', 1);

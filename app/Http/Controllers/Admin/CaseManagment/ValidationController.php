@@ -211,7 +211,7 @@ public function index(Request $request)
                  //  $input = $request->all();
                     $input['updated_at'] = Carbon::now();
                     $input['ar_name']=$request->ar_name;
-                    $input['name']=$request->name;
+                     $input['name']=$request->name;
                     $input['ar_description']=$request->ar_description;
                     $input['type_id']=$request->type_id;
                     $input['provider_id']=$request->provider_id;

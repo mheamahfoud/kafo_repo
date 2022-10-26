@@ -25,15 +25,13 @@ class City extends Model
 
 
     
-    public function donors()
-    {
-        return $this->hasMany('App\Models\Donor','city_id');
-    }
-
-
     public function country()
     {
         return $this->belongsTo('App\Models\Country','country_id');
     }
-
+    
+    public function donors()
+    {
+        return $this->hasMany('App\Models\Donor','city_id');
+    }
 }

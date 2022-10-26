@@ -313,7 +313,7 @@ class Helpers
     }
 
 
-    public static function getFileName(string $type): string
+  public static function getFileName(string $type): string
     {  
         list(, $extension) = explode('/', $type);
         $image_name = time() . '_kafo_' . rand(1, 1000);

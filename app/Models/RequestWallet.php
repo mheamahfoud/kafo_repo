@@ -28,12 +28,13 @@ class RequestWallet  extends Model implements HasMedia
 
 
 
-  
+ 
     public function donor()
     {
        
         return $this->belongsTo('App\Models\Donor','donor_id')->withTrashed();
     }
+    
        public function case()
     {
         return $this->belongsTo('App\Models\CaseDonation','case_id');

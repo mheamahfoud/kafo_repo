@@ -44,7 +44,7 @@ class SendPushNotification extends Notification
         return (new FirebaseMessage)
             ->withTitle($this->title)
             ->withBody($this->message)
-            ->withImage(is_null($this->icon)? null : env('APP_URL').'/'. $this->icon)
+                 ->withImage(is_null($this->icon)? null : env('APP_URL').'/'. $this->icon)
             ->withPriority('high')->asNotification($this->fcmTokens);
     }
 }

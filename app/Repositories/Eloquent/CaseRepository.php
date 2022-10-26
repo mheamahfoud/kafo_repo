@@ -28,7 +28,7 @@ class CaseRepository extends BaseRepository implements CaseRepositoryInterface
      */
     public function __construct(CaseDonation $model, CaseDonor $modelDonor ,SecretInfo  $modelSecretInfo,CaseDonor $modelCaseDonor ,CaseFollower $modelCaseFollower ,CaseUpdate $modelCaseUpdate )
     {
-     //   $this->model = $model::where('is_active',1)->where('status','!=','draft');is_published
+       // $this->model = $model::where('is_active',1)->where('status','!='//,'draft');
         $this->model = $model::where('is_active',1)->where('is_published',1);
         $this->modelDonor = $modelDonor;
         $this->modelSecretInfo = $modelSecretInfo;
@@ -158,6 +158,12 @@ class CaseRepository extends BaseRepository implements CaseRepositoryInterface
     }
 
 
+    public function checkDonationCaseByDonor($case_id,$donor_id): bool
+    {
+       return !is_null($this->modelCaseDonor->where('case_id',$case_id)->where('donor_id',$donor_id)->first()) ;
+     
+    }
+    
     
 }
 

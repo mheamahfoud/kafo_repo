@@ -205,13 +205,13 @@ class UserManagmentController extends Controller
             $donor = $this->donorRepository->findById($donor_id, $columns = ['*'], $relations = ['user', 'wallet','media'], $appends = []);
 
             if (!is_null($donor)) {
-              /*  $image_profile = array_filter($donor->media->toArray(), function ($val) {
+        /*        $image_profile = array_filter($donor->media->toArray(), function ($val) {
                     return $val['collection_name'] === 'Donors';
                 });*/
                 $data = [
                     'full_name' => $donor->user->full_name,
                     'secret_name' => $donor->secret_name,
-                    'image' =>    !is_null($donor->media) ? count($donor->media) > 0 ?  $donor['media'][0]['full_url'] : null : null,
+          'image' => is_null($donor->image_path)?null: env('APP_URL').'/'. $donor->image_path,
                     'mobile' => $donor->user->mobile,
                     'email' => $donor->user->email,
 
@@ -246,7 +246,7 @@ class UserManagmentController extends Controller
             $donor = $this->donorRepository->findById($donor_id, $columns = ['*'], $relations = ['user'], $appends = []);
 
             if (!is_null($donor)) {
-               /* $image_profile = array_filter($donor->media->toArray(), function ($val) {
+              /*  $image_profile = array_filter($donor->media->toArray(), function ($val) {
                     return $val['collection_name'] === 'Donors';
                 });*/
                 $data = [
@@ -316,7 +316,7 @@ class UserManagmentController extends Controller
                         File::delete(public_path($donor->image_path));
                     }
                     Storage::disk('users_files')->makeDirectory($donor->id);
-                    $randomize = rand(1, 100);
+                    $randomize = rand(111111, 999999);
                     $extension = $request->file('image')->getClientOriginalExtension();
                     $filename = time().'_'.$randomize . '.' . $extension;
                     $path = public_path(config('constants.users_upload_folder')) . '/' . $donor->id . '/' ;
@@ -329,7 +329,7 @@ class UserManagmentController extends Controller
               
                 $donor = $this->donorRepository->editProfile($payload, $id);
                 DB::commit();
-                /*$image_profile = array_filter($donor->media->toArray(), function ($val) {
+               /* $image_profile = array_filter($donor->media->toArray(), function ($val) {
                     return $val['collection_name'] === 'Donors';
                 });*/
 
@@ -372,13 +372,15 @@ class UserManagmentController extends Controller
                 $p->with('case');
             }], $appends = []);
             if (!is_null($donor)) {
-                
+               // echo json_encode($donor_id);
+              //  die();
                 $data = [
                     'total_amount' => Helpers::number_format_short($donor->wallet->amount),
                     'last_charge_amount' => Helpers::number_format_short($donor->wallet->last_charge_amount),
                     'last_charge_date' => $donor->wallet->last_charge_date,
                     'charge_count' => Helpers::number_format_short($donor->wallet->charge_count),
-                    'total_donation_amount' => Helpers::number_format_short(array_sum(array_column($donor->donations->toArray(), 'amount'))+$this->donorRepository->GetSumDonationsForAppByDonor($donor_id)),
+                              'total_donation_amount' => Helpers::number_format_short(array_sum(array_column($donor->donations->toArray(), 'amount'))+$this->donorRepository->GetSumDonationsForAppByDonor($donor_id)),
+
 
                     'donations' => array_map(
                         function ($val1) use ($lang ) {

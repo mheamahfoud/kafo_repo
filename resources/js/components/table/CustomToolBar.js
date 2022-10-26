@@ -236,7 +236,7 @@ function CustomToolBar(props) {
             </Grid>
             {props.setAddDialogOpen && (<Grid item xs={2} sm={2} lg={2} md={2} >
                 <div style={{ textAlign: 'end', padding: '5px' }} >
-                    <Fab size="small" onClick={() => { props.setAddDialogOpen(true) }} style={{ color: '#fff', background: mainColor }} aria-label="add" disabled={props.addDisabled}>
+                    <Fab size="small" onClick={() => { props.setAddDialogOpen(true) }} style={{ color: '#fff', background: mainColor }} aria-label="add" disabled ={true} title={'test test'}>
                         <AddIcon />
 
                     </Fab>

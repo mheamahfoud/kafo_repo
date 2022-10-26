@@ -20,7 +20,7 @@ class CaseViewResources extends JsonResource
         return [
             'id' => $this->id,
             'wallet_amount'=> $this->wallet_amount,
-            'contain_secret_info'=>is_null($this->secret_info_id) ? false:true,
+            'contain_secret_info'=>is_null($this->secret_info_id) ? false:$this->has_donate,
             'is_follow'=>is_null($this->follower)?false:true,
             'name' =>$lang=='en' ? $this->name :  (is_null($this->ar_name)?"":$this->ar_name),
             'description' => $lang=='en' ? $this->description : (is_null($this->ar_description)?"":$this->ar_description )   , 

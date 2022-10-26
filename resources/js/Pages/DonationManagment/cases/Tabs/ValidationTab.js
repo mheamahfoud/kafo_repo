@@ -222,7 +222,7 @@ export default function ValidationTab({ ...props }) {
         <React.Fragment>
 
             <Paper className={GeneralStyles.paperhearder} elevation={5}>
-            <DataTable rows={rows} columns={columns} setAddDialogOpen={setAddDialogOpen} loading={loading} disableVirtualization={true}  type={'validations'} case_id={props.case?.id}/>
+            <DataTable rows={rows} columns={columns} setAddDialogOpen={setAddDialogOpen} loading={loading} disableVirtualization={true}  type={'validations'} case_id={props.case?.id} addDisabled={true}/>
 
                 <AddValidationDialog
                     open={addDialogOpen}

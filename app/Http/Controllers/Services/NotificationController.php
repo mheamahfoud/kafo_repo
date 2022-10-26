@@ -57,8 +57,7 @@ class NotificationController extends Controller
         try {
             $image_path=null;
             if (isset($request->image)) {
-                Storage::disk('notifications_files');
-              
+               /// Storage::disk('notifications_files')->makeDirectory();
                  list($type, $data_image) = explode(';',$request->image);
                  list(, $data_image) = explode(',', $data_image);
                  $data_image = base64_decode($data_image);

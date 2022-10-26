@@ -10,16 +10,15 @@ class System extends Model
     use HasFactory;
     protected $table ="system";
 
-   /* public function getCreatedAtAttribute($value){
+    public function getCreatedAtAttribute($value){
         $date = Carbon::parse($value);
         return $date->format('Y-m-d H:i:s');
     }
     public function getUpdatedAtAttribute($value){
         $date = Carbon::parse($value);
         return $date->format('Y-m-d H:i:s');
-    }*/
-
-    public function DonateForKafo($value)
+    }
+     public function DonateForKafo($value)
     {
         $system= System::where('key', 'SYSTEM_KAFO_BALANCE' )->first(); 
          if(is_null($system)){
@@ -37,5 +36,4 @@ class System extends Model
          }
         
     }
-   
 }

@@ -15,8 +15,8 @@ class RequestResouces extends JsonResource
     {
         return [
             'id'=>$this->id,
-            'requester_name' =>!is_null($this->donor->user) ? $this->donor->user->full_name:""  ,
-            'requester_phone_number'=> !is_null($this->donor->user) ? $this->donor->user->mobile:""  , 
+            'requester_name' => $this->donor->user->full_name ,
+            'requester_phone_number'=>$this->donor->user->mobile,
             'amount'=>$this->amount,
             'request_date_time'=>$this->created_at,
             'status'=>$this->status,

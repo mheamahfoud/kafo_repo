@@ -17,9 +17,9 @@ class NotificationsResources extends JsonResource
     {
         return [
             'id' => $this->id,
+              'icon_path' => is_null($this->image_path)?null: env('APP_URL').'/'. $this->image_path,
             'created_ago' => $this->created_at->diffForHumans(),
             'title' => $this->title,
-            'icon_path' => is_null($this->image_path)?null: env('APP_URL').'/'. $this->image_path,
             'description' => $this->description,
             'type' => $this->type,
             'readed_at' => $this->readed_at,
@@ -28,7 +28,7 @@ class NotificationsResources extends JsonResource
             'sender' => $this->sender->name,
 
 
-
+   //'icon_path' =>!is_null($this->image_path) ? 'https://kafo.90-soft.com/'. //$this->image_path : null,
         ];
     }
 }

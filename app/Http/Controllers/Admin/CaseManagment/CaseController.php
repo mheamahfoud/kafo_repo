@@ -56,11 +56,11 @@ class CaseController extends Controller
             } elseif ($descending == 'true') {
                 $orderby = 'desc';
             } elseif ($descending == '') {
-                $orderby = 'desc';
-                $sort_by = 'id';
+                $orderby = 'asc';
+                $sort_by = 'created_at';
             }
 
-            $query = CaseDonation::with(['validations', 'donors', 'costs' => function ($q) {
+            $query = CaseDonation::orderBy('created_at', 'DESC')->with(['validations', 'donors', 'costs' => function ($q) {
                 $q->where('is_active', 1);
             }, 'media' => function ($q) {
                 $q->where('collection_name', 'Cover_Photo');
@@ -337,7 +337,7 @@ class CaseController extends Controller
                 DB::beginTransaction();
                 $data['updated_at'] = Carbon::now();
                 $data['publish_date'] = Carbon::now();
-                $data['is_published'] = 1;
+                 $data['is_published'] = 1;
                 $data['updated_by'] = Auth::guard('api')->user()->id;
                 $data['status'] = 'published';
                 $case->update($data);
@@ -389,6 +389,8 @@ class CaseController extends Controller
                     $donor = Donor::withTrashed()->where('id',$item->donor_id)->first();
 
                     $wallet = Wallet::where('id', $donor->wallet_id)->first();
+
+                 //  $wallet = Wallet::where('id', $donor->wallet_id)->first();
                     $wallet->amount = $wallet->amount + $refund;
                     $wallet->last_charge_amount = $refund;
                     $wallet->charge_count = $wallet->charge_count + 1;

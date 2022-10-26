@@ -16,7 +16,7 @@ class Media extends BaseMedia
     ];
 
     protected $appends = ['full_url', 'download_url', 'display_name'];
-
+ 
 
     public function getCreatedAtAttribute($value){
         $date = Carbon::parse($value);
@@ -32,7 +32,7 @@ class Media extends BaseMedia
  public function getFullUrlAttribute()
     {
         $x=str_replace("uploads","public/uploads",$this->getFullUrl());
-        return $x;
+        return $this->getFullUrl();
     }
 
     /**

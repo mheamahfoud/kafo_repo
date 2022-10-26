@@ -16,12 +16,12 @@ let webpack = require('webpack');
 .sass('resources/sass/app.scss', 'public/react/css');*/
 mix.js('resources/js/app.js', 'public/react/main/js').react()
   .sass('resources/sass/app.scss', 'public/css')
-.webpackConfig({
+/*.webpackConfig({
     output: {
-   filename: '[name].[contenthash].js',
+  // filename: '[name].[contenthash].js',
    chunkFilename: 'react/main/js/[name][chunkhash].js',
  },
- });
+ });*/
 //mix.js('resources/js/app.js', 'public/react/main/js').react()
 //.sass('resources/sass/app.scss', 'public/react/css');
 

@@ -76,6 +76,7 @@ class CaseController extends Controller
             $donor = $this->donorRepository->findById($donor_id, $columns = ['*'], $relations = ['wallet'], $appends = []);
             
                 $case->setAttribute('wallet_amount', $donor->wallet->amount);
+                $case->setAttribute('has_donate', $this->caseRepository->checkDonationCaseByDonor($case->id,$donor_id));
                 $array=[];
                 array_push($array,$case);
                 $res=CaseViewResources::collection($array)[0];
@@ -102,7 +103,7 @@ class CaseController extends Controller
             $lang= $request->header('lang');
             $cases = $this->caseRepository->getCount();
             $success_stories = $this->successStoryRepository->getCount();
-            $donations = 100;///$this->caseRepository->getDonorCount(); 
+            $donations = $this->caseRepository->getDonorCount(); 
             
             $data=[
                 'success_stories' =>Helpers::number_format_short( $success_stories),

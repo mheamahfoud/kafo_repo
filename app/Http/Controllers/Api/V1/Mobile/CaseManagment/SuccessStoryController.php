@@ -68,7 +68,7 @@ class SuccessStoryController extends Controller
 
 
        'case_id' =>$story->case->id,
-                    'case_name' =>   $lang=='en' ? $story->case->name : is_null( $story->case->ar_name) ?  "" : $story->case->ar_name,
+                    'case_name' =>   $lang=='en' ? $story->case->name :( is_null( $story->case->ar_name) ?  "" : $story->case->ar_name),
                    'cover_photo_url' => count($cover_photo)>0  ? !isset($cover_photo[0]['full_url'])?  null: $cover_photo[0]['full_url'] :null,
                    'vedio_url' => $story->vedio_url,
                     'images'  => array_column($images, 'full_url') ,

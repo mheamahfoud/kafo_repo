@@ -20,7 +20,7 @@ class DonorResouces extends JsonResource
        
         return [
             'id' => $this->id,
-            'image_path' => $this->image_path,
+            'image_path' => is_null($this->image_path)?null: env('APP_URL').'/'. $this->image_path,
             'full_name' =>!is_null($this->user) ? $this->user->full_name : '' ,
            // 'image_url' => count( $this->media)>0 ?  $this->media[0]['full_url'] :'',
          //   'display_name' => count( $this->media)>0 ?  $this->media[0]['display_name'] :'',

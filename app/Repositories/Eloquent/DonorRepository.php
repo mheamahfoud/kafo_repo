@@ -160,7 +160,7 @@ class DonorRepository extends BaseRepository implements DonorRepositoryInterface
          
     }
 
-    public function GetSumDonationsForAppByDonor($donor_id)
+     public function GetSumDonationsForAppByDonor($donor_id)
     {
         return $this->walletRequestModel
         ->where('donor_id',$donor_id)

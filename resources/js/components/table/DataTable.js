@@ -35,7 +35,7 @@ export default function DataTable({ ...props }) {
                             type:props?.type,
                             case_id:props?.case_id,
                             quickFilterProps: { debounceMs: 500 }, setAddDialogOpen: props.setAddDialogOpen,
-                            addDisabled:props.addDisabled
+                            addDisabled:props?.addDisabled
                         },
                     }}
                     rowsPerPageOptions={[5, 10, 20, 15]}
