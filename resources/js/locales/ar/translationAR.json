@@ -247,5 +247,10 @@
     "ar_name": "الاسم بالعربي",
     "ar_description": "الوصع بالعربي",
     "send":"ارسل",
-    "send_notification_by_action": "هل تريد ارسال اشعار من اجل هذا الفعل"
+    "send_notification_by_action": "هل تريد ارسال اشعار من اجل هذا الفعل",
+
+
+    "case_completed":"تم اكتمال الحالة",
+
+    "case_published":"تم بث الحالة"
 }

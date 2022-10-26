@@ -129,7 +129,7 @@ export default function ValidationTab({ ...props }) {
                 width: 100,
                 getActions: (params) => [
                     <GridActionsCellItem
-                        icon={<EditIcon style={{fill:mainColor}}  />}
+                        icon={<EditIcon style={{fill:mainColor}}   />}
                         label={t('update')}
                         onClick={() => {
                             setData(params.row)
@@ -222,8 +222,7 @@ export default function ValidationTab({ ...props }) {
         <React.Fragment>
 
             <Paper className={GeneralStyles.paperhearder} elevation={5}>
-            <DataTable rows={rows} columns={columns} setAddDialogOpen={setAddDialogOpen} loading={loading} disableVirtualization={true}  type={'validations'} case_id={props.case?.id} addDisabled={true}/>
-
+            <DataTable rows={rows} columns={columns} setAddDialogOpen={setAddDialogOpen} loading={loading} disableVirtualization={true}  type={'validations'} case_id={props.case?.id} addDisabled={props.case?.is_published} reasonDisabled={t('case_published')}/>
                 <AddValidationDialog
                     open={addDialogOpen}
                     case_id={props.case?.id}

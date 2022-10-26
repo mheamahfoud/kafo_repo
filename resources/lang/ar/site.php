@@ -23,7 +23,7 @@ return array (
     'close_case'=>"الحالة تتم اغلاقها من قبل",
     'cancel_case'=>"الحالة تتم الغائها من قبل",
     
-    'publish_not_completed'=>'الحالة غير مكتمة للاغلاق',
+    'case_not_completed'=>'الحالة غير مكتمة للاغلاق',
     'case'=>'الحالة',
     'object_not_active'=>' :name غير مفعل',
     'validation_type_related_to_validation'=>'نمط التحقق مرتبط بتحققات ',
@@ -63,8 +63,16 @@ return array (
     "receipt_image"=>"صورة الوصل",
     'donation_bigger_remainging'=>'شكر لكم لقد تم استرجاع :name من مقدار التبرع وذلك لاكتمال الحالة',
 
-
+    
     'ar_name'=>"الاسم بالعربي",
+    'ar_description'=>"الوصف بالعربي",
+    'description'=>"الوصف",
+    'type_id'=>"النمط",
     'country_id'=>"الدولة",
+    'value'=>"المقدار",
+    'case_completed'=>"تم اكتمال الحالة",
+    'case_published'=>"تم بث الحالة",
+    'case_locked'=>"تم الغاء الحالة",
+
     
 );

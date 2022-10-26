@@ -191,8 +191,7 @@ export default function CostTab({ ...props }) {
         <React.Fragment>
 
             <Paper className={GeneralStyles.paperhearder} elevation={5}>
-                <DataTable rows={rows} columns={columns} setAddDialogOpen={setAddDialogOpen} loading={loading} disableVirtualization={true} type={'costs'} case_id={props.case?.id} />
-
+                <DataTable rows={rows} columns={columns} setAddDialogOpen={setAddDialogOpen} loading={loading} disableVirtualization={true} type={'costs'} case_id={props.case?.id} addDisabled={props.case?.is_completed} reasonDisabled={t('case_completed')} />
                 <AddCostDialog
                     open={addDialogOpen}
                     case_id={props.case?.id}

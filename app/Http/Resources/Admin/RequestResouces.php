@@ -16,6 +16,7 @@ class RequestResouces extends JsonResource
         return [
             'id'=>$this->id,
             'requester_name' => $this->donor->user->full_name ,
+            'image_path' => is_null($this->image_path)?null: env('APP_URL').'/'. $this->image_path,
             'requester_phone_number'=>$this->donor->user->mobile,
             'amount'=>$this->amount,
             'request_date_time'=>$this->created_at,

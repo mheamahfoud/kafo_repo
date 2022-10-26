@@ -243,6 +243,9 @@
   "ar_name":"Arabic Name",
   "ar_description":"Arabic Description",
   "send":"send",
-  "send_notification_by_action": "Do You Want To Send Notification For this Action ?"
+  "send_notification_by_action": "Do You Want To Send Notification For this Action ?",
+  "case_completed":"case has been completed",
+
+  "case_published":"case has been published"
 
 }

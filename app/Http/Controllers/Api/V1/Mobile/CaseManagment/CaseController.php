@@ -183,7 +183,10 @@ class CaseController extends Controller
                     $message = Lang::get('site.object_not_found',['name'=>__('site.case',[],$lang)],$lang);
                     return Response::respondError($message);
                 }
-
+                if ($this->caseRepository->CheckLocked($request->case_id)) {
+                    $message = Lang::get('site.case_locked',[],$lang);
+                    return Response::respondError($message);
+                }
                 DB::beginTransaction();
                 $input['donor_id']=$donor_id;
                 $input['case_id']=$request->case_id;

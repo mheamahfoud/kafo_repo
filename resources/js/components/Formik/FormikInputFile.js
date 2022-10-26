@@ -177,14 +177,14 @@ export default function FormikInputFile({
                 </Box>
 
 
-                {(uploadedImage && !loading) ? (<Box  >
+                {(uploadedImage && <Box  >
                     <Image
                         src={uploadedImage}
                         thumbnail
                         style={{ width: '120px' }}
                     />
 
-                </Box>) : <CircularProgress style={{ color: mainColor,  }} />}
+                </Box>)}
 
 
 

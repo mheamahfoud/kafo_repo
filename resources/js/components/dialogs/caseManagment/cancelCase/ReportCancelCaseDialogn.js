@@ -83,6 +83,8 @@ export default function ReportCancelCaseDialogn({ open, data, ...props }) {
                     temp['percentage_completed']=data['percentage_completed'];
                     temp['total_needed_amount']=data['total_needed_amount']
                     temp['remaining_amount']=data['remaining_amount']
+                    temp['can_cancel']=false;
+                    
                     props.setUpdateRow(temp)
                     props.onClose();
                     dispatch(setNotificationData(

@@ -182,8 +182,8 @@ export default function CasePage() {
                 width: 120,
                 getActions: (params) => [
                     < GridActionsCellItem
-                        hidden={['rejected', 'completed', 'closed', 'published'].includes(params.row.status)}
-                        showInMenu={!['closed'].includes(params.row.status)}
+                        hidden={!params.row.can_publish}
+                        showInMenu={params.row.can_publish}
                         icon={<PublishIcon style={{ fill: mainColor }} />}
                         label={t('publish_case')}
                         onClick={() => {
@@ -197,8 +197,8 @@ export default function CasePage() {
                     />,
 
                     < GridActionsCellItem
-                        showInMenu={!['closed'].includes(params.row.status)}
-                        hidden={['closed', 'canceled'].includes(params.row.status)}
+                        hidden={!params.row.can_cancel}
+                        showInMenu={params.row.can_cancel}
                         icon={<CancelIcon style={{ fill: mainColor }} />}
                         label={t('cancel_case')}
                         onClick={() => {
@@ -212,9 +212,10 @@ export default function CasePage() {
                     />,
 
                     < GridActionsCellItem
-                        showInMenu={!['closed'].includes(params.row.status)}
+                        hidden={!params.row.can_close}
+                        showInMenu={params.row.can_close}
                         icon={<CloseIcon style={{ fill: mainColor }} />}
-                        hidden={!['completed'].includes(params.row.status)}
+
                         label={t('close_case')}
                         onClick={() => {
                             setData(params.row)
@@ -317,6 +318,8 @@ export default function CasePage() {
                         var index = rows.findIndex(x => x.id == dialog_confirm_data.id);
                         var temp = rows.find(x => x.id == dialog_confirm_data.id);
                         temp['status'] = 'published'
+                        temp['can_publish'] = false;
+                        temp['can_cancel'] = true
                         setRows([
                             ...rows.slice(0, index),
                             temp,

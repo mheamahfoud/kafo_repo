@@ -43,7 +43,7 @@ class CaseController extends Controller
         $lang = $request->cookie('current_language');
         //
         if (Auth::guard('api')->check()) {
-           /* $fcmTokens = User::whereNotNull('fcm_token')->pluck('fcm_token')->toArray();
+            /* $fcmTokens = User::whereNotNull('fcm_token')->pluck('fcm_token')->toArray();
     
             Notification::send(null,new SendPushNotification('test test ','yyyy',$fcmTokens));
 */
@@ -128,7 +128,7 @@ class CaseController extends Controller
         if ($validate->fails()) {
             return Response::respondErrorValidation($validate->errors()->first());
         }
-       
+
 
         try {
             DB::beginTransaction();
@@ -325,7 +325,7 @@ class CaseController extends Controller
 
 
             if (!is_null($case)) {
-                if ($case->status == 'published' || $case->status == 'closed' || $case->status == 'completed') {
+                if ($case->is_published) {
                     $message = Lang::get('site.publish_already', [], $lang);
                     return Response::respondError($message);
                 }
@@ -334,10 +334,14 @@ class CaseController extends Controller
                     $message = Lang::get('site.object_not_active', ['name' => __('site.case', [], $lang)], $lang);
                     return Response::respondError($message);
                 }
+                if ($case->is_locked) {
+                    $message = Lang::get('site.case_locked', [], $lang);
+                    return Response::respondError($message);
+                }
                 DB::beginTransaction();
                 $data['updated_at'] = Carbon::now();
                 $data['publish_date'] = Carbon::now();
-                 $data['is_published'] = 1;
+                $data['is_published'] = 1;
                 $data['updated_by'] = Auth::guard('api')->user()->id;
                 $data['status'] = 'published';
                 $case->update($data);
@@ -367,13 +371,13 @@ class CaseController extends Controller
             }])->find($request->case_id);
 
             if (!is_null($case)) {
-                if ($case->status == 'closed' || $case->status == 'canceld') {
-                    $message = '';
-                    if ($case->status == 'closed')
-                        $message = Lang::get('site.close_case', [], $lang);
-                    else
-                        $message = Lang::get('site.cancel_case', [], $lang);
 
+                if ($case->is_locked) {
+                    $message = Lang::get('site.case_locked', [], $lang);
+                    return Response::respondError($message);
+                }
+                if ($case->status == 'closed') {
+                    $message = Lang::get('site.close_case', [], $lang);
                     return Response::respondError($message);
                 }
                 DB::beginTransaction();
@@ -381,16 +385,17 @@ class CaseController extends Controller
                 $data['updated_by'] = Auth::guard('api')->user()->id;
 
                 $data['reason_cancel'] = $request->reason;
+                $data['is_locked'] = 1;
                 $data['status'] = 'canceled';
                 $total_amount = array_sum(array_column($case->donors->toArray(), 'amount'));
                 $total_paid_cost = array_sum(array_column($case->costs->toArray(), 'value'));
                 foreach ($case->donors as $item) {
                     $refund = $item->amount - ($item->amount / $total_amount) * $total_paid_cost;
-                    $donor = Donor::withTrashed()->where('id',$item->donor_id)->first();
+                    $donor = Donor::withTrashed()->where('id', $item->donor_id)->first();
 
                     $wallet = Wallet::where('id', $donor->wallet_id)->first();
 
-                 //  $wallet = Wallet::where('id', $donor->wallet_id)->first();
+                    //  $wallet = Wallet::where('id', $donor->wallet_id)->first();
                     $wallet->amount = $wallet->amount + $refund;
                     $wallet->last_charge_amount = $refund;
                     $wallet->charge_count = $wallet->charge_count + 1;
@@ -435,18 +440,21 @@ class CaseController extends Controller
 
             $case = CaseDonation::find($request->id);
             if (!is_null($case)) {
-                if ($case->status != 'completed') {
-                    $message = Lang::get('site.publish_not_completed', [], $lang);
+                if (!$case->is_completed) {
+                    $message = Lang::get('site.case_not_completed', [], $lang);
                     return Response::respondError($message);
                 }
-
+                if ($case->is_locked) {
+                    $message = Lang::get('site.case_locked', [], $lang);
+                    return Response::respondError($message);
+                }
                 DB::beginTransaction();
                 $data['updated_at'] = Carbon::now();
                 $data['updated_by'] = Auth::guard('api')->user()->id;
                 $data['status'] = 'closed';
                 $data['description'] = $request->description;
                 $case->update($data);
-              // $this->addMultiMedias($request->images, $case, 'images_Case');
+                // $this->addMultiMedias($request->images, $case, 'images_Case');
                 $this->addMultiMedias($request->images, $case, 'images_Case', $request->delete_files);
                 DB::commit();
                 $message = Lang::get('site.success_update', [], $lang);
@@ -623,8 +631,8 @@ class CaseController extends Controller
             $data['created_by'] = Auth::guard('api')->user()->id;
             $update = CaseUpdate::create($data);
             $case = CaseDonation::find($request->case_id);
-            $case_update['updated_at'] = Carbon::now();
-            $case->update($case_update);
+            $case->updated_at=Carbon::now();
+            $case->update();
 
             $this->addMedias($request->medias, $update, 'update_case');
             DB::commit();
@@ -675,6 +683,10 @@ class CaseController extends Controller
                 $input['description'] = $request->description;
                 $input['ar_description'] = $request->ar_description;
                 $case_update->update($input);
+                $case = CaseDonation::find($case_update->case_id);
+                $case->updated_at=Carbon::now();
+                $case->update();
+
                 $case_update->created_by = Auth::guard('api')->user()->full_name;
                 $this->addMedias($request->medias, $case_update, 'update_case', true);
                 DB::commit();
@@ -705,6 +717,9 @@ class CaseController extends Controller
                 $data['updated_at'] = Carbon::now();
                 $data['is_active'] = !$update->is_active;
                 $update->update($data);
+                $case = CaseDonation::find($update->case_id);
+                $case->updated_at=Carbon::now();
+                $case->update();
                 DB::commit();
                 $message = Lang::get('site.success_update', [], $lang);
                 return Response::respondSuccess($update);

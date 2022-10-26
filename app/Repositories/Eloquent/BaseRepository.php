@@ -36,7 +36,7 @@ class BaseRepository implements EloquentRepositoryInterface
 
     public function paginate($limit = null, $columns = ['*'],array $relations = [])
     {
-        return $this->model->with($relations)->paginate($limit, $columns);
+        return $this->model->orderBy('updated_at', 'DESC')->with($relations)->paginate($limit, $columns);
     }
     /**
      * Get all trashed models.

@@ -21,6 +21,7 @@ import AcceptRequestDialog from '../../../components/dialogs/requests/AcceptRequ
 import { globalSelector } from '../../../redux/features/global_slice';
 import { setDialogConfirmOpen, setDialogConfirmData } from '../../../redux/features/global_slice';
 import { mainColor } from '../../../config/constants';
+import ModalImage from "react-modal-image-responsive";
 export default function RequestPage() {
     const { t } = useTranslation();
     const {lang,dialog_confirm_data} = useSelector(globalSelector)
@@ -65,6 +66,29 @@ export default function RequestPage() {
                 field: 'requester_name',
                 headerName: t('requester_name'),
                 flex: 1, headerAlign: 'center',
+
+            },
+
+            {
+                field: 'image_path',
+                width: 100,
+                align: 'center',
+                // height: 200,
+                headerName: t('image'),
+                headerAlign: 'center',
+                renderCell: (params) => {
+                    // return params.row.image_url
+                    return (
+                        <>
+
+                            <ModalImage
+                                className="img-fluid"
+                                small={params.row.image_path}
+                                large={params.row.image_path}
+                            />
+                        </>
+                    )
+                }
 
             },
             {

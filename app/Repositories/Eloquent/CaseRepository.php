@@ -58,6 +58,9 @@ class CaseRepository extends BaseRepository implements CaseRepositoryInterface
       
     public function donate(array $payload): ?CaseDonor
     {
+        $case=$this->model->find($payload['case_id']);
+        $case->updated_at = Carbon::now();
+        $case->update();
         $payload['created_at']= Carbon::now();
         $model = $this->modelCaseDonor->create($payload);
 
@@ -73,7 +76,9 @@ class CaseRepository extends BaseRepository implements CaseRepositoryInterface
 
     public function followCase(array $payload): ?CaseFollower
     {
-        
+        $case=$this->model->find($payload['case_id']);
+        $case->updated_at = Carbon::now();
+        $case->update();
         return $this->modelCaseFollower->create($payload);
     }
 
@@ -142,6 +147,8 @@ class CaseRepository extends BaseRepository implements CaseRepositoryInterface
     {
        $case=$this->model->find($case_id);
        $case->status='completed';
+       $case->is_completed=true;
+       $case->updated_at = Carbon::now();
        $case->update();
       return  $case;
      
@@ -163,7 +170,14 @@ class CaseRepository extends BaseRepository implements CaseRepositoryInterface
        return !is_null($this->modelCaseDonor->where('case_id',$case_id)->where('donor_id',$donor_id)->first()) ;
      
     }
-    
+    public function CheckLocked($case_id): ?bool
+    {
+       // $amount = $this->model->with('wallet')->findOrfail($donor_id)->wallet->amount;
+
+       $case= $this->model->find($case_id);
+        return $case->is_locked;
+    }
+
     
 }
 

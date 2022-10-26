@@ -112,8 +112,10 @@ export default function AddCloseCaseDialog({ open, data, ...props }) {
                             ))
                             dispatch(setDialogConfirmNotificationOpen(true))
                             temp['percentage_completed']=data['percentage_completed'];
-                            temp['total_needed_amount']=data['total_needed_amount']
-                            temp['remaining_amount']=data['remaining_amount']
+                            temp['total_needed_amount']=data['total_needed_amount'];
+                            temp['remaining_amount']=data['remaining_amount'];
+                            temp['can_close']=false;
+                            
                             props.setUpdateRow(temp)
                         } else {
                             setLoading(false)

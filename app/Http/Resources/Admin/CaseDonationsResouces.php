@@ -30,7 +30,9 @@ class CaseDonationsResouces extends JsonResource
             
 ,            'created_at'=>$this->created_at,
             'created_by'=>!is_null($this->creator) ? $this->creator->full_name : null,
-
+            'can_publish'=>(count($this->costs)  > 0 && count($this->validations)  && !$this->is_published && !$this->is_locked),
+           'can_cancel'=>($this->is_published && !$this->is_locked && $this->status!='closed'),
+           'can_close'=>($this->is_completed && !$this->is_locked && $this->status!='closed'),
         ];
     }
 }

@@ -20,7 +20,9 @@ import {
     gridVisibleColumnFieldsSelector,
 } from '@mui/x-data-grid';
 import MenuItem from '@mui/material/MenuItem';
-
+import Tooltip from '@mui/material/Tooltip';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
 import { mainColor } from '../../config/constants';
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next';
@@ -211,13 +213,13 @@ const csvOptions = { delimiter: ';' };
 const CustomExportButton = (props) => (
     <GridToolbarExportContainer {...props}>
         {/* <GridPrintExportMenuItem options={{ hideFooter: true, hideToolbar: true, hideMenu: true }} /> */}
-        <JsonExportMenuItem type={props?.type ?? undefined}  case_id={props?.case_id ?? undefined} />
+        <JsonExportMenuItem type={props?.type ?? undefined} case_id={props?.case_id ?? undefined} />
     </GridToolbarExportContainer>
 );
 
 function CustomToolBar(props) {
     const { t } = useTranslation();
-    const {lang} = useSelector(globalSelector)
+    const { lang } = useSelector(globalSelector)
     React.useEffect(() => {
     }, []);
     return (
@@ -228,20 +230,26 @@ function CustomToolBar(props) {
                     <GridToolbarColumnsButton />
                     <GridToolbarFilterButton />
                     <GridToolbarDensitySelector />
-                    <CustomExportButton type={props?.type ?? undefined}     case_id={props?.case_id ?? undefined}  />
+                    <CustomExportButton type={props?.type ?? undefined} case_id={props?.case_id ?? undefined} />
                     <GridToolbarQuickFilter style={lang == 'ar' ? { marginRight: 'auto' } : { marginLeft: 'auto' }} />
                 </GridToolbarContainer>
                 {/* <GridToolbar style={{ height: '49px' }} showQuickFilter={props.showQuickFilter} quickFilterProps={{ debounceMs: 500, onclick: (e) => { alert(JSON.stringify(e)) } }} /> */}
 
             </Grid>
-            {props.setAddDialogOpen && (<Grid item xs={2} sm={2} lg={2} md={2} >
+            {!props.addDisabled ? props.setAddDialogOpen && (<Grid item xs={2} sm={2} lg={2} md={2} >
                 <div style={{ textAlign: 'end', padding: '5px' }} >
-                    <Fab size="small" onClick={() => { props.setAddDialogOpen(true) }} style={{ color: '#fff', background: mainColor }} aria-label="add" disabled ={true} title={'test test'}>
+                    <Fab size="small" onClick={() => { props.setAddDialogOpen(true) }} style={{ color: '#fff', background: mainColor }} aria-label="add" >
                         <AddIcon />
 
                     </Fab>
                 </div>
-            </Grid>)}
+            </Grid>) :
+                <div style={{ textAlign: 'end', padding: '5px' }} title={props?.reasonDisabled}>
+                    <Fab size="small" disabled>
+                        <AddIcon />
+                    </Fab>
+                </div>
+            }
         </Grid >
 
     );

@@ -21,7 +21,7 @@ return array(
     'publish_already'=>'Case Already Published',
     'close_case'=>'Case Already Closed ',
     'cancel_case'=>"Case Already Canceld",
-    'publish_not_completed'=>' :name Not Yet Completed',
+    'case_not_completed'=>'Case Not Yet Completed',
     'case'=>'Case',
 
     'object_not_active'=>' :name  not active',
@@ -60,5 +60,13 @@ return array(
     'donation_bigger_remainging'=>":name Has Been Recovered From The Amount Of The Donation Because  OF Complete The Case",
     'ar_name'=>"Arabic Name",
     'country_id'=>"Country",
-    
-);  
+    'ar_description'=>"Arabic Description",
+    'description'=>"Description",
+    'type_id'=>"Type",
+    'value'=>"Value",
+
+    'case_completed'=>"Case has been completed",
+    'case_published'=>"Case has been published",
+    'case_locked'=>"Case has been canceled",
+
+);
