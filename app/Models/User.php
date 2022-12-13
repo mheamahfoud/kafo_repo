@@ -73,7 +73,9 @@ class User extends Authenticatable implements HasMedia
         'password',
         'mobile',
         'is_active',
-        'fcm_token'
+        'fcm_token',
+        'mobile_verfied',
+        'mobile_verfied_at'
         
     ];
 

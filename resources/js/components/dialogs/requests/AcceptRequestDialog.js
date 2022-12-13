@@ -65,9 +65,7 @@ export default function AcceptRequestDialog({ open, ...props }) {
                 onSubmit={async (values) => {
                     setLoading(true)
                     AcceptRequest(values).then((result) => {
-                        // alert(JSON.stringify(result.success))
                         if (result.success) {
-                        
                             enqueueSnackbar(t('added_successfully'), {
                                 variant: 'success',
                                 anchorOrigin: {
@@ -78,6 +76,7 @@ export default function AcceptRequestDialog({ open, ...props }) {
                             props.onClose()
                             setLoading(false)
                             var temp=props.data;
+                            temp['image_path']=result.data.image_path;
                            temp['status']='accepted'
                             props.setUpdateRow(temp)
                         } else {

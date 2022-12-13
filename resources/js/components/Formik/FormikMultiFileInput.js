@@ -79,48 +79,55 @@ export default function FormikMultiFileInput({
     const { values, } = useFormikContext();
     const classes = useStyles();
     const { t } = useTranslation();
-    const [file, setFile] = useState([]);
+    const [files, setFiles] = useState([]);
     const [tempDeteteFiles, setTempDeteteFiles] = useState([]);
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         if (images_url != undefined) {
-            var ImagesArray1 = images_url.map((x, index) => {
+           
+            var ImagesArray1 = images_url?.map((x, index) => {
                 return {
                     'url': x.url, 'id': x.id, 'file_name': undefined, 'model_id': x.model_id
                 }
             })
-            setFile(ImagesArray1);
-            setFieldValue(props.name, [...values[props.name], ...ImagesArray1]);
+            setFiles(ImagesArray1);
+          //  setFieldValue(props.name, [...values[props.name], ...ImagesArray1]);
 
         }
 
     }, [images_url]);
 
     const uploadMultipleFiles = (e) => {
-        setLoading(true)
+
         var formData = new FormData();
         let ImagesArray = Object.entries(e.target.files).map((e) => {
             formData.append("images[]", e[1]);
             return { url: URL.createObjectURL(e[1]) };
         });
+        setLoading(true)
         uploadTempFile(formData).then((result) => {
-            var ImagesArray1 = ImagesArray.map((x, index) => {
-                return {
-                    'url': x.url, 'file_name': result.data.file_name[index], 'id': undefined, 'model_id': undefined
-                }
-            })
-            setFile([...file, ...ImagesArray1]);
-            e.target.value = null;
-            if (values[props.name] == undefined)
-                setFieldValue(props.name, ImagesArray1);
-            else
-                setFieldValue(props.name, [...values[props.name], ...ImagesArray1]);
+
+            if (result.success) {
+                var ImagesArray1 = ImagesArray.map((x, index) => {
+                    return {
+                        'url': x.url, 'file_name': result.data.file_name[index], 'id': undefined, 'model_id': undefined
+                    }
+                })
+                setFiles([...files, ...ImagesArray1]);
+                e.target.value = null;
+                if (values[props.name] == undefined)
+                    setFieldValue(props.name, ImagesArray1);
+                else
+                    setFieldValue(props.name, [...values[props.name], ...ImagesArray1]);
+                setLoading(false)
+            }
+
         });
-        setLoading(false)
+
     }
     function deleteFile(e) {
-        console.log(file)
-        const d = file.filter((item, index) => index === e);
+        console.log(files)
+        const d = files.filter((item, index) => index === e);
         var values = {};
         if (d[0].file_name != undefined)
             values['file_name'] = d[0].fie_name;
@@ -135,7 +142,7 @@ export default function FormikMultiFileInput({
 
             }
         )
-        const s = file.filter((item, index) => index !== e);
+        const s = files.filter((item, index) => index !== e);
         if (s.length == 0) {
             setFieldValue(props.name, undefined);
         }
@@ -148,7 +155,7 @@ export default function FormikMultiFileInput({
 
             //  setFieldValue(props.name, s);
         }
-        setFile(s);
+        setFiles(s);
 
 
     }
@@ -158,7 +165,7 @@ export default function FormikMultiFileInput({
         <div style={{ width: '100%' }}>
 
             {!loading ? <div className="form-group multi-preview" style={{ display: "flex", flexWrap: 'wrap' }}>
-                {(file || []).map((item, index) => (
+                {(files || [])?.map((item, index) => (
                     <div
                         style={{ display: "flex", flexDirection: 'column', justifyContent: "center", padding: '5px' }}
                     >
@@ -170,7 +177,7 @@ export default function FormikMultiFileInput({
                         <Button size="sm" className="btn btn-danger" onClick={() => deleteFile(index)}>Remove</Button>
                     </div>
                 ))}
-            </div> : <div  style={{ display: "flex", flexWrap: 'wrap' ,justifyContent:'center'}}><CircularProgress style={{ color: mainColor,  }} /></div>}
+            </div> : <div style={{ display: "flex", flexWrap: 'wrap', justifyContent: 'center' }}><CircularProgress style={{ color: mainColor, }} /></div>}
 
 
 

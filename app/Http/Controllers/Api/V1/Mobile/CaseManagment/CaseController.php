@@ -161,7 +161,7 @@ class CaseController extends Controller
             $lang= $request->header('lang');
             $validate = validator($request->all(), [
                 'case_id' => 'required',
-                'amount' => 'required|numeric|min:1',
+                'amount' => 'required|numeric|min:500',
                 //'kafo_amount' => 'numeric|min:1',
                // 'donor_id' => 'required',
             
@@ -207,6 +207,8 @@ class CaseController extends Controller
                     $kafo_transaction["donor_id"]=$donor_id;
                     $kafo_transaction["amount"]=$request->kafo_amount;
                     $kafo_transaction["type"]="donation";
+                    $kafo_transaction["case_id"]=null;
+                    $this->caseRepository->donate($kafo_transaction);
                     $this->donorRepository->CreateRequest($kafo_transaction);
                 }
 

@@ -71,6 +71,10 @@ class Donor extends Model implements HasMedia
     {
         return $this->hasMany('App\Models\CaseDonor','donor_id');
     }
+    public function requests()
+    {
+        return $this->hasMany('App\Models\RequestWallet','donor_id');
+    }
 
     
 

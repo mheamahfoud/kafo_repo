@@ -32,11 +32,13 @@ import * as Yup from 'yup';
 
 
 function App() {
+  
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const dispatch = useDispatch()
   useEffect(() => {
-
+    localStorage.setItem('time_zone', Intl.DateTimeFormat().resolvedOptions().timeZone
+    );
     setToken();
     CheckAuth().then((result) => {
       if (result.success) {

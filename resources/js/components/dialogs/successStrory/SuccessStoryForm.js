@@ -11,13 +11,16 @@ import { GetCases } from '../../../api/caseManager/case';
 import { useFormikContext } from 'formik';
 import FormikInputTextArea from '../../Formik/FormikInputTextArea';
 import ARFormikInputTextArea from '../../Formik/ARFormikInputTextArea';
+import FormikMultiFileInputBackup from '../../Formik/FormikMultiFileInputBackup';
+import FormikSingleInputFile from '../../Formik/FormikSingleInputFile';
 
-export default function SuccessStoryForm({ image_url, images_url }) {
+export default function SuccessStoryForm({ image_url, images_url,...props }) {
     const { setFieldValue, status, isSubmitting, values } = useFormikContext();
     const [cases, setCases] = useState([]);
     const { t } = useTranslation();
 
     useEffect(() => {
+        //alert(JSON.stringify(images_url))
         GetCases().then((res) => {
             if (res.success)
                 setCases(
@@ -78,7 +81,7 @@ export default function SuccessStoryForm({ image_url, images_url }) {
             </Grid>
             
             <Grid item lg={12} md={12} sm={12} xs={12} >
-                <FormikInputFile
+                <FormikSingleInputFile
                     name="cover_photo"
                     setFieldValue={setFieldValue}
                     isRequired={true}
@@ -93,14 +96,13 @@ export default function SuccessStoryForm({ image_url, images_url }) {
                 <FormikMultiFileInput
                     name="images"
                     setFieldValue={setFieldValue}
-                    images_url={images_url != undefined ? images_url : undefined}
                     isRequired={false}
-                    // image_url={image_url != undefined ? image_url : undefined}
+                    images_url={images_url != undefined ? images_url : undefined}
                     title={t('images')}
 
                 />
 
-            </Grid>
+            </Grid> 
 
 
 

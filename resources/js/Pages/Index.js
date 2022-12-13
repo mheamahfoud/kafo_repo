@@ -6,7 +6,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from '../redux/store';
+import moment from 'moment-timezone';
+const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
 
+moment.tz.setDefault();
 
 const rootElement = document.getElementById('app');
 const root = createRoot(rootElement);

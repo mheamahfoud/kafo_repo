@@ -172,8 +172,6 @@ class ProviderController extends Controller
                     $input['description'] =  $request->description;
                     $input['ar_description'] =  $request->ar_description;
                   
-                  
-                //    $this->addMedias($request->medias,$provider , 'provider' ,true );
                     if (isset($request->image)) {
                         if (File::exists(public_path($provider->image_path))) {
                             File::delete(public_path($provider->image_path));
@@ -187,9 +185,6 @@ class ProviderController extends Controller
                         file_put_contents($path, $data_image);
                         $image_path='uploads/provider/'.$provider->id.'/'. $filename;
                         $input['image_path'] = $image_path;
-                        //$provider->setAttribute('image_url',count($driver_media->media)> 0 ? $driver_media->media[0]['full_url']: '' );
-                       // $provider->setAttribute('display_name',count($driver_media->media)> 0 ? $driver_media->media[0]['display_name']: '' );
-    
                    }
                    $provider->update($input);
                     DB::commit();

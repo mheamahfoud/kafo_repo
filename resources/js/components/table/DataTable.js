@@ -12,7 +12,7 @@ export default function DataTable({ ...props }) {
     const { t } = useTranslation();
     return (
         <>
-            <div style={{ height: 400, width: '100%' ,padding:'15px',color:'#ffff' }}>
+            <div style={{ height: 500, width: '100%' ,padding:'25px',color:'#ffff' }}>
                 <StyledDataGrid
                     ///checkboxSelection
                     pageSize={10}
@@ -24,7 +24,7 @@ export default function DataTable({ ...props }) {
                     WebkitFontSmoothingx
                     showColumnRightBorder
                     hideFooterSelectedRowCount
-                    disableVirtualization={false}
+                    disableVirtualization={true}
                     columnBuffer={Number.MAX_SAFE_INTEGER}
                     hideFooterSelectedRowCountx
                     rows={props.rows}

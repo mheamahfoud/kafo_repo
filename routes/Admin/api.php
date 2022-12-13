@@ -227,11 +227,16 @@ Route::post('checkAuth','StatusController@checkAuth');
         Route::post('delete_validation','Admin\CaseManagment\ValidationController@destroy');
         
         Route::post('update_validation/{id}','Admin\CaseManagment\ValidationController@update');
-        //////////////////////////--------Country-------------//////////////////////////////
-        // Route::post('get_country','Admin\SetUp\CountryController@index');
-        // Route::post('create_country','Admin\SetUp\CountryController@store');
-        // Route::post('update_country/{id}','Admin\SetUp\CountryController@update');
-        // Route::post('activDeactive_country','Admin\SetUp\CountryController@activateDeactive');
+     
+
+
+        //////////////////////////--------FAQ-------------//////////////////////////////
+          Route::post('get_questions','Admin\SetUp\FAQController@index');
+          Route::post('create_question','Admin\SetUp\FAQController@store');
+          Route::post('update_question/{id}','Admin\SetUp\FAQController@update');
+          Route::post('activDeactive_question','Admin\SetUp\FAQController@activateDeactive');
+
+
 
         
         Route::post('get_donor_list','Admin\UserManagment\DonorController@getDonorsList');
@@ -250,13 +255,18 @@ Route::post('checkAuth','StatusController@checkAuth');
 
         Route::post('setFcmToken','HomeController@setFcmToken');
 
+        
+        Route::post('update_termCondition','Admin\SetUp\TermsConditionController@updateTermCondition');
+        Route::post('get_termCondition','Admin\SetUp\TermsConditionController@getTermCondition');
+
 
         Route::post('send_specific_notification','Services\NotificationController@sendSpecificNotification');
 
         
         Route::post('send_push_notification','Services\NotificationController@sendPushNotification');
+        Route::post('get_notifications','Services\NotificationController@index');
 
-
+        
 
         
 //-----------------------End-----------------------------Users Managment------------------------

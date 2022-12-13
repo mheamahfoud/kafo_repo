@@ -17,15 +17,16 @@ import { useSnackbar } from "notistack";
 import "./style.css";
 import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
-import { Image } from "react-bootstrap";
+import { Button, Image } from "react-bootstrap";
 import DataTable from '../../../components/table/DataTable';
 import { globalSelector } from '../../../redux/features/global_slice';
 import { setDialogConfirmOpen, setDialogConfirmData } from '../../../redux/features/global_slice';
 import { mainColor } from '../../../config/constants';
+import FileViewer from '../../../components/dialogs/File/FileViewer';
 export default function SuccessStoryPage() {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
-    const {lang,dialog_confirm_data} = useSelector(globalSelector)
+    const { lang, dialog_confirm_data } = useSelector(globalSelector)
 
     const dispatch = useDispatch()
     const handleShowDialog = () => {
@@ -42,7 +43,10 @@ export default function SuccessStoryPage() {
     const [loading, setLoading] = React.useState(true);
     const { enqueueSnackbar } = useSnackbar();
     let navigate = useNavigate();
-
+    const [fileViewPath, setFileViewPath] = useState(null);
+    const handleFileDialog = () => {
+        setFileViewPath(null);
+    };
     const columns = React.useMemo(
         () => [
             {
@@ -62,7 +66,7 @@ export default function SuccessStoryPage() {
 
             },
             {
-                field: 'cover_image',
+                field: 'image_path',
                 width: 100,
                 // height: 200,
                 headerName: t('cover_image'),
@@ -70,15 +74,16 @@ export default function SuccessStoryPage() {
                 renderCell: (params) => {
                     // return params.row.image_url
                     return (
-                        <a href={params.row.download_url} download >
-                            <Image
-                                fluid
-                                src={params.row.image_url}
 
-                                thumbnail
+                        <Image
+                            onClick={() => setFileViewPath(params.row.image_path)}
+                            fluid
+                            src={params.row.image_path}
 
-                            />
-                        </a>
+                            thumbnail
+
+                        />
+
                     )
                 }
 
@@ -114,7 +119,7 @@ export default function SuccessStoryPage() {
                 align: 'center',
                 type: 'date',
                 valueFormatter: params =>
-                new Date(params?.value).toLocaleDateString(lang == 'ar' ? 'ar-EG' : 'en-US'),
+                    new Date(params?.value).toLocaleDateString(lang == 'ar' ? 'ar-EG' : 'en-US'),
                 flex: 1, headerAlign: 'center',
 
             },
@@ -126,7 +131,7 @@ export default function SuccessStoryPage() {
                 getActions: (params) => [
 
                     < GridActionsCellItem
-                        icon={<InfoIcon style={{fill:mainColor}}  />}
+                        icon={<InfoIcon style={{ fill: mainColor }} />}
                         label={t('detail')}
                         onClick={() => {
                             navigate("/Donation/success-stories/view", { state: { 'name': params.row.case_name, 'id': params.row.id } });
@@ -136,7 +141,7 @@ export default function SuccessStoryPage() {
                     />,
 
                     <GridActionsCellItem
-                        icon={< EditIcon style={{fill:mainColor}}  />}
+                        icon={< EditIcon style={{ fill: mainColor }} />}
                         label={t('update')}
                         onClick={() => {
                             setData(params.row)
@@ -150,7 +155,7 @@ export default function SuccessStoryPage() {
                             dispatch(setDialogConfirmOpen(true))
                             dispatch(setDialogConfirmData({ is_active: params.row.is_active, id: params.row.id }))
 
-                     
+
                         }
 
                         }
@@ -187,10 +192,10 @@ export default function SuccessStoryPage() {
                 ...rows.slice(0, index),
                 updateRow,
                 ...rows.slice(index + 1, rows.length)]);
-                setRows([
-                    ...rows.slice(0, index),
-                    updateRow,
-                    ...rows.slice(index + 1, rows.length)]);
+            setRows([
+                ...rows.slice(0, index),
+                updateRow,
+                ...rows.slice(index + 1, rows.length)]);
         }
     }, [updateRow])
 
@@ -205,8 +210,8 @@ export default function SuccessStoryPage() {
                         ...rows.slice(0, index),
                         temp,
                         ...rows.slice(index + 1, rows.length)]);
-                        dispatch(setDialogConfirmOpen(false))
-                        dispatch(setDialogConfirmData({ is_active: 0, id: null }))
+                    dispatch(setDialogConfirmOpen(false))
+                    dispatch(setDialogConfirmData({ is_active: 0, id: null }))
                     enqueueSnackbar(t('updated_successfully'), {
                         variant: 'success',
                         anchorOrigin: {
@@ -255,6 +260,12 @@ export default function SuccessStoryPage() {
                 message={dialog_confirm_data.is_active ? t('sure_inactivate') : t('sure_activate')}
                 callBack={handleActivateDialogYes}
             />
+            {fileViewPath && (
+                <FileViewer
+                    path={fileViewPath}
+                    handleFileDialog={handleFileDialog}
+                />
+            )}
         </Paper>
     </React.Fragment>
 

@@ -41,9 +41,9 @@ export default function CostTab({ ...props }) {
         
         valueFormatter: ({ value }) => {
             if (lang == 'ar')
-                return currencyFormatter.format(value)
+                return currencyFormatter.format(value).replace('٫٠٠', '').replace(/\s/g, '')
             else {
-                return (currencyFormatter.format(value).replace('SYP', '')  + ' SYP')
+                return (currencyFormatter.format(value).replace('SYP', '')  + ' SYP').replace('.00', '').replace(/\s/g, '')
             }
         },
         cellClassName: 'font-tabular-nums',

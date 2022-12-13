@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Barryvdh\Debugbar\Facade as Debugbar;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\NotificationsResources;
+use App\Http\Resources\Admin\NotificationsResources;
 use App\Models\NotificationModel;
 use Notification;
 use App\Notifications\SendPushNotification;
@@ -31,7 +31,22 @@ class NotificationController extends Controller
             'AAAA3GLfjWI:APA91bHF8Gc2BfnJ5vPuxfZsgt1340BhBxquNPHdYgbz4nB0LwAULlN8k6cTkX1hmU_a0D2kN_zqhRjr3TDGPYh26XbERY_J1lfYdGPM6VzNYxMh_SeHK01O4Onv72aQiOm6xxKdiKut';
     }
 
+    public function index(Request $request)
+    {
 
+        $lang = $request->header('lang');;
+        $rowsPerPage = ($request->get('rowsPerPage') > 0) ? $request->get('rowsPerPage') : 0;
+        $notifications = NotificationModel::with('receiver', 'sender')
+          //  ->whereReceiverId(Auth::guard('api')->user()->id)
+            ->orderBy('created_at', 'desc')->get();
+          //  ->paginate($rowsPerPage);
+
+      /*  $data = [
+            'items' => NotificationsResources::collection($notifications),
+            //'total' => $notifications->total(),
+        ];*/
+        return Response::respondSuccess(NotificationsResources::collection($notifications));;
+    }
 
     /**
      * send specific Push Notification
@@ -73,7 +88,7 @@ class NotificationController extends Controller
             $fcmTokens = User::whereNotNull('fcm_token')->whereIn('id',$request->users_id)->pluck('fcm_token')->toArray();
             
            
-            Notification::send(null, new SendPushNotification($request->title, $request->body,$image_path, $fcmTokens));
+            Notification::send(null, new SendPushNotification($request->title, $request->body,$image_path,null, $fcmTokens));
             foreach ($request->users_id as $user) {
                 $notification = [];
 
@@ -135,8 +150,8 @@ class NotificationController extends Controller
                 $fcmTokens = User::whereNotNull('fcm_token')->whereIn('id',$users_id)->pluck('fcm_token')->toArray();
                 $title = "Publish New Case";
                 $message = "new case have been publish";
-                
-                Notification::send(null, new SendPushNotification($title, $message,$image_path, $fcmTokens));
+                // $message = "#". $request->case_id;
+                Notification::send(null, new SendPushNotification($title, $message,$image_path,$request->case_id, $fcmTokens));
 
                 foreach ($users_id as $user) {
                     $notification = [];
@@ -150,6 +165,7 @@ class NotificationController extends Controller
                     $notification['description'] =$message;
     
                     $notification['type'] = 'publish_case';
+                     $notification['case_id'] =  $request->case_id;
                     $notification['image_path'] = $image_path;
                     NotificationModel::create($notification);
                 }
@@ -167,8 +183,9 @@ class NotificationController extends Controller
                 $users_id = Donor::whereIn('id',$donor_ids)->pluck('user_id')->toArray();
                 $fcmTokens = User::whereNotNull('fcm_token')->whereIn('id',$users_id)->pluck('fcm_token')->toArray();
                 $title = "Cancel Case";
-                $message = "Case " .$case->name . "  have been canceled";
-                Notification::send(null, new SendPushNotification($title, $message,$image_path, $fcmTokens));
+               $message = "Case " .$case->name . "  have been canceled";
+              // $message = "#". $request->case_id;
+                Notification::send(null, new SendPushNotification($title, $message,$image_path, $request->case_id,$fcmTokens));
                 foreach ($users_id as $user) {
                     $notification = [];
     
@@ -182,6 +199,7 @@ class NotificationController extends Controller
     
                     $notification['type'] = 'cancel_case';
                     $notification['image_path'] = $image_path;
+                     $notification['case_id'] =  $request->case_id;
                     NotificationModel::create($notification);
                 }
 
@@ -201,7 +219,8 @@ class NotificationController extends Controller
                 $fcmTokens = User::whereNotNull('fcm_token')->whereIn('id',$users_id)->pluck('fcm_token')->toArray();
                 $title = "Close Case";
                 $message = "Case " .$case->name . "  have been closed";
-                Notification::send(null, new SendPushNotification($title, $message,$image_path, $fcmTokens));
+               // $message = "#". $request->case_id;
+                Notification::send(null, new SendPushNotification($title, $message,$image_path,$request->case_id, $fcmTokens));
                 foreach ($users_id as $user) {
                     $notification = [];
     
@@ -215,6 +234,8 @@ class NotificationController extends Controller
     
                     $notification['type'] = 'close_case';
                     $notification['image_path'] = $image_path;
+                    
+                     $notification['case_id'] =  $request->case_id;
                     NotificationModel::create($notification);
                 }
                 
@@ -231,8 +252,8 @@ class NotificationController extends Controller
 
                 $fcmTokens = User::whereNotNull('fcm_token')->pluck('fcm_token')->toArray();
                 $title = "Add Update";
-                $message =  "new Update have been added to Case "  .$case->name ;
-               
+               $message =  "new Update have been added to Case "  .$case->name ;
+              // $message = "#". $request->case_id;
                 foreach ($users_id as $user) {
                     $notification = [];
                   
@@ -246,9 +267,10 @@ class NotificationController extends Controller
     
                     $notification['type'] = 'add_update';
                     $notification['image_path'] = $image_path;
+                     $notification['case_id'] =  $request->case_id;
                     NotificationModel::create($notification);
                 }
-                Notification::send(null, new SendPushNotification($title, $message,$image_path, $fcmTokens));
+                Notification::send(null, new SendPushNotification($title, $message,$image_path,$request->case_id, $fcmTokens));
 
               
             }

@@ -8,7 +8,7 @@ import CancelButton from '../../buttons/CancelButton';
 import { useSnackbar } from "notistack";
 import { AcceptRequest } from '../../../api/userManagment/request';
 import FormikSingleInputFile from '../../Formik/FormikSingleInputFile';
-import FormilInputLabelNumber from '../../Formik/FormilInputLabelNumber';
+import FormikInputLabelPrice from '../../Formik/FormikInputLabelPrice';
 import { ChargeWallet } from '../../../api/userManagment/request';
 import {
     Grid,
@@ -122,11 +122,12 @@ export default function ChargeWalletDialog({ open, ...props }) {
 
                             <Grid container spacing={2}>
                                 <Grid item lg={12} md={12} sm={12} xs={12} >
-                                    <FormilInputLabelNumber
+                                    <FormikInputLabelPrice
                                         name="amount"
                                         type="number"
                                         size="small"
                                         title={t('amount')}
+                                        setFieldValue={setFieldValue}
                                         isRequired={true}
                                     />
                                 </Grid>

@@ -25,6 +25,8 @@ import InfoIcon from '@mui/icons-material/Info';
 import { globalSelector } from '../../../redux/features/global_slice';
 import { mainColor } from '../../../config/constants';
 import { setDialogConfirmOpen, setDialogConfirmData } from '../../../redux/features/global_slice';
+import FileViewer from '../../../components/dialogs/File/FileViewer';
+import { Image } from "react-bootstrap";
 export default function UserPage() {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +45,10 @@ export default function UserPage() {
     const handleShowDialog = () => {
         setIsOpen(current => !current);
     }
+    const [fileViewPath, setFileViewPath] = useState(null);
+    const handleFileDialog = () => {
+        setFileViewPath(null);
+    };
     const currencyFormatter = new Intl.NumberFormat(lang == 'ar' ? 'ar-EG' : 'en-US', {
         style: 'currency',
         currency: 'SYP',
@@ -50,12 +56,12 @@ export default function UserPage() {
     const usdPrice = {
         type: 'number',
         width: 130,
-
+        
         valueFormatter: ({ value }) => {
             if (lang == 'ar')
-                return currencyFormatter.format(value)
+                return currencyFormatter.format(value).replace('٫٠٠', '').replace(/\s/g, '')
             else {
-                return (currencyFormatter.format(value).replace('SYP', '') + ' SYP')
+                return (currencyFormatter.format(value).replace('SYP', '')  + ' SYP').replace('.00', '').replace(/\s/g, '')
             }
         },
         cellClassName: 'font-tabular-nums',
@@ -85,16 +91,16 @@ export default function UserPage() {
                 headerName: t('image'),
                 headerAlign: 'center',
                 renderCell: (params) => {
-                    // return params.row.image_url
                     return (
-                        <>
+                        <Image
+                            onClick={() => setFileViewPath(params.row.image_path)}
+                            fluid
+                            src={params.row.image_path}
 
-                            <ModalImage
-                                className="img-fluid"
-                                small={params.row.image_path}
-                                large={params.row.image_path}
-                            />
-                        </>
+                            thumbnail
+
+                        />
+
                     )
                 }
 
@@ -166,7 +172,7 @@ export default function UserPage() {
                 width: 100,
                 getActions: (params) => [
                     < GridActionsCellItem
-                        icon={<InfoIcon style={{fill:mainColor}}  />}
+                        icon={<InfoIcon style={{ fill: mainColor }} />}
                         label={t('detail')}
                         onClick={() => {
                             navigate("/UsersManagment/user/view", { state: { 'name': params.row.full_name, 'id': params.row.id } });
@@ -176,7 +182,7 @@ export default function UserPage() {
                     />,
 
                     <GridActionsCellItem
-                        icon={< EditIcon style={{fill:mainColor}}  />}
+                        icon={< EditIcon style={{ fill: mainColor }} />}
                         label={t('update')}
                         showInMenu
                         onClick={() => {
@@ -197,7 +203,7 @@ export default function UserPage() {
                     />,
 
                     <GridActionsCellItem
-                        icon={< AccountBalanceIcon style={{fill:mainColor}}  />}
+                        icon={< AccountBalanceIcon style={{ fill: mainColor }} />}
                         label={t('charge')}
                         showInMenu
                         onClick={() => {
@@ -250,8 +256,8 @@ export default function UserPage() {
                         ...rows.slice(0, index),
                         res.data,
                         ...rows.slice(index + 1, rows.length)]);
-                        dispatch(setDialogConfirmOpen(false))
-                        dispatch(setDialogConfirmData({ is_active: 0, id: null }))
+                    dispatch(setDialogConfirmOpen(false))
+                    dispatch(setDialogConfirmData({ is_active: 0, id: null }))
 
                     enqueueSnackbar(t('updated_successfully'), {
                         variant: 'success',
@@ -280,7 +286,7 @@ export default function UserPage() {
     return (<React.Fragment>
         <Paper className={GeneralStyles.paperhearder} elevation={5} >
 
-            <DataTable rows={rows} columns={columns} setAddDialogOpen={setAddDialogOpen} loading={loading}  type={'donors'}/>
+            <DataTable rows={rows} columns={columns} setAddDialogOpen={setAddDialogOpen} loading={loading} type={'donors'} />
 
             {(<AddDonorDialog
                 open={addDialogOpen}
@@ -314,6 +320,12 @@ export default function UserPage() {
                 message={dialog_confirm_data.is_active ? t('sure_inactivate') : t('sure_activate')}
                 callBack={handleActivateDialogYes}
             />
+            {fileViewPath && (
+                <FileViewer
+                    path={fileViewPath}
+                    handleFileDialog={handleFileDialog}
+                />
+            )}
         </Paper>
     </React.Fragment>
 

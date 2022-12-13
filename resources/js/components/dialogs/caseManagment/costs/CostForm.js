@@ -1,7 +1,7 @@
 import React from 'react';
 import FormikInputLabel from '../../../Formik/FormikInputLabel';
 import ARFormikInputLabel from '../../../Formik/ARFormikInputLabel';
-import FormilInputLabelNumber from '../../../Formik/FormilInputLabelNumber';
+import FormikInputLabelPrice from '../../../Formik/FormikInputLabelPrice';
 import FormikSelect from '../../../Formik/FormikSelect';
 import {
     Grid,
@@ -36,9 +36,10 @@ export default function CostForm() {
 
             
             <Grid item md={12} sm={12}>
-                <FormilInputLabelNumber
+                <FormikInputLabelPrice
                     name="value"
                     type="text"
+                    setFieldValue={setFieldValue}
                     size="small"
                     title={t('value')}
                 />

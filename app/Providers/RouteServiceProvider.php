@@ -67,7 +67,7 @@ class RouteServiceProvider extends ServiceProvider
                 });   
 
                 Route::group([
-                    'middleware' => ['api','user_accessible'],
+                    'middleware' => ['api','user_accessible','verify_mobile_number'],
                     'namespace'  => "{$this->apiNamespace}\V1",
                     'prefix'     => 'api/v1',
                 ], function ($router) {

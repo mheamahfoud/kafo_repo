@@ -234,7 +234,6 @@ function CustomToolBar(props) {
                     <GridToolbarQuickFilter style={lang == 'ar' ? { marginRight: 'auto' } : { marginLeft: 'auto' }} />
                 </GridToolbarContainer>
                 {/* <GridToolbar style={{ height: '49px' }} showQuickFilter={props.showQuickFilter} quickFilterProps={{ debounceMs: 500, onclick: (e) => { alert(JSON.stringify(e)) } }} /> */}
-
             </Grid>
             {!props.addDisabled ? props.setAddDialogOpen && (<Grid item xs={2} sm={2} lg={2} md={2} >
                 <div style={{ textAlign: 'end', padding: '5px' }} >

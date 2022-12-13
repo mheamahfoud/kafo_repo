@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 export default function GeneralInfoTab({ ...props }) {
     const classes = useStyles();
     const { t } = useTranslation();
-    const {lang} = useSelector(globalSelector)
+    const { lang } = useSelector(globalSelector)
 
 
 
@@ -163,7 +163,13 @@ export default function GeneralInfoTab({ ...props }) {
 
                     </Grid>
                     <Grid container item md={6} sm={12}>
-                        <InputLabelDetail title={t('last_charge_date')} value={new Date(props.donor?.wallet?.last_charge_date).toLocaleDateString(lang == 'ar' ? 'ar-EG' : 'en-US') + ' ' + new Date(props.donor?.wallet?.last_charge_date).toLocaleTimeString(lang == 'ar' ? 'ar-EG' : 'en-US')} />
+                        <InputLabelDetail title={t('last_charge_date')} value={new Date(moment
+                            .tz(props.donor?.wallet?.last_charge_date, 'UTC')
+                            .tz(localStorage.getItem('time_zone') || 'Asia/Damascus')
+                            .format('YYYY-MM-DD HH:mm:ss')).toLocaleDateString(lang == 'ar' ? 'ar-EG' : 'en-US') + ' ' + new Date(moment
+                                .tz(props.donor?.wallet?.last_charge_date, 'UTC')
+                                .tz(localStorage.getItem('time_zone') || 'Asia/Damascus')
+                                .format('YYYY-MM-DD HH:mm:ss')).toLocaleTimeString(lang == 'ar' ? 'ar-EG' : 'en-US')} />
 
                     </Grid>
 

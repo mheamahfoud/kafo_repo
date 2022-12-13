@@ -20,7 +20,15 @@ class SuccessStoryRepository extends BaseRepository implements SuccessStoryRepos
         $this->model = $model::where('is_active',1);
     
     }
-
-
+    public function increaseViews($story_id)
+    {
+        $story=$this->model->find($story_id);
+        return $story->update(
+            [
+                'views_count'=>$story->views_count+1
+            ]
+            );
+    }
+  
 
 }

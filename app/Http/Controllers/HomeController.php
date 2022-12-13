@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\System;
 use App\Services\FCMService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -10,7 +11,8 @@ use App\Http\Responses\Response;
 use Notification;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\SendPushNotification;
-
+use Illuminate\Support\Facades\DB;
+use Lang;
 class HomeController extends Controller
 {
     /**
@@ -88,4 +90,54 @@ class HomeController extends Controller
             return 'computer';
     }
     
+
+
+
+
+    public function updateTermCondition(Request $request)
+    {
+        $lang = $request->cookie('current_language');
+        $validate = validator(
+            $request->all(),
+            [
+                'en_description' => 'required',
+                'ar_description' => 'required',
+            ],
+            [
+                'required'  => Lang::get('site.required',['name'=>':attribute'],$lang),
+              
+            ]
+        );
+
+        if ($validate->fails()) {
+            return Response::respondErrorValidation($validate->errors()->first());
+        }
+
+
+        try {
+            DB::beginTransaction();
+            System::updateArabicTermCondition($request->ar_description);
+            System::updateEnglishTermCondition($request->en_description);
+            DB::commit();
+            return Response::respondSuccess('success');
+        }
+        catch (Exception $e) {
+            DB::rollBack();
+            return Response::respondError($e);
+        }
+            
+    }
+
+
+    public function getTermCondition(Request $request)
+    {
+             $ar_desc= System::getArabicTermCondition();
+             $en_desc= System::getEnglishTermCondition();
+            return Response::respondSuccess([
+                "ar_description"=>$ar_desc  ,
+                "en_description"=> $en_desc ,
+            ]);
+    }
+
+
 }

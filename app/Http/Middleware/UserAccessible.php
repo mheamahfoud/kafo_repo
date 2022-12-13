@@ -28,7 +28,10 @@ class UserAccessible
         if(!Auth::guard('api')->user()->is_active){
               return Response::respondErrorUnAuthorize(__('site.unAuthorize',[],$lang));
         }
+      
 
+
+        
         return $next($request);
     }
 }

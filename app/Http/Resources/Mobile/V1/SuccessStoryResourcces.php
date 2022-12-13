@@ -23,9 +23,9 @@ class SuccessStoryResourcces extends JsonResource
        'case_id' =>$this->case->id,
             'case_name' =>$lang=='en' ? $this->case->name:  $this->case->ar_name,
             'description' => $lang=='en' ? $this->description  : $this->ar_description,
-            'cover_photo_url' => count( $this->media)>0 ?  $this->media[0]['full_url'] :null,
+           // 'cover_photo_url' => count( $this->media)>0 ?  $this->media[0]['full_url'] :null,
             'created_at' => $this->created_at ,
-        
+            'cover_photo_url' => is_null($this->image_path)?null: env('APP_URL').'/'. $this->image_path,
         ];
     }
 }

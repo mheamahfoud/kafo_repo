@@ -39,7 +39,8 @@ return [
     'receipt_upload_folder' => 'uploads/receipt_image',
     'notification_upload_folder' => 'uploads/notifications',
     'users_upload_folder' => 'uploads/users',
-
+    
+    'successStories_upload_folder' => 'uploads/successStories',
     
     'enable_client_signup' => !empty(env('ENABLE_CLIENT_SIGNUP')) ? true : false,
     'ticket_prefix' => 'ticket#',

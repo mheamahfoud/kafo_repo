@@ -49,10 +49,10 @@ export default function EditSuccessStoryDialog({ open, data, ...props }) {
         case_id: Yup.string().required(t('required')).nullable(),
         vedio_url: Yup.string().matches(urlRegExp, t('url_valid')).nullable(),
         description: Yup.string().required(t('required')).nullable(),
-        cover_photo: Yup.array().of(Yup.string()).required(t('required')),
+         cover_photo: Yup.string().required(t('required')),
     });
     const {deleteFiles} = useSelector(fileSelector)
-
+    const [files, setFiles] = React.useState(null);
     useEffect(() => {
         dispatch(InitDelteFiles())
     }, [])
@@ -62,8 +62,9 @@ export default function EditSuccessStoryDialog({ open, data, ...props }) {
         if (data != null && open == true) {
             EditSuccessStroy({ 'id': data.id }).then(
                 (res) => {
+
                     console.log(res.data.media.length)
-                    setImagesUrl(res.data.media.map(x => { return { 'url': x.full_url, 'id': x.id, 'model_id': data.id } }));
+                    setImagesUrl(res.data?.media.map(x => { return { 'url': x.full_url, 'id': x.id, 'model_id': data.id } }));
                     setCurrentUpdated(res.data)
                     setLoadingData(false)
                 }
@@ -99,7 +100,7 @@ export default function EditSuccessStoryDialog({ open, data, ...props }) {
                 enableReinitialize={true}
                 validateOnChange={true}
                 validationSchema={SuccessStoryScehma}
-                initialValues={{ ...currentUpdated, images: [], cover_photo: [], }}
+                initialValues={{ ...currentUpdated,"cover_photo":"old_files"}}
                 initialStatus={{ edit: true }}
                 onSubmit={async (values) => {
                     setLoading(true)
@@ -107,7 +108,6 @@ export default function EditSuccessStoryDialog({ open, data, ...props }) {
                     console.log(values)
                    
                     values['delete_files'] = deleteFiles
-                    // }
                     values['images'] = values['images'] != undefined ? values['images'].map(x => x.file_name).filter(function (el) {
                         return el != null;
                     }) : undefined;
@@ -165,7 +165,7 @@ export default function EditSuccessStoryDialog({ open, data, ...props }) {
 
                         <DialogContent>
                             <DialogContentText></DialogContentText>
-                            {loadingData ?  <LoadingElement/>  : <SuccessStoryForm image_url={data?.image_url} images_url={imagesUrl} />}
+                            {loadingData ?  <LoadingElement/>  : <SuccessStoryForm image_url={data?.image_path} images_url={imagesUrl} />}
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose} color="primary">

@@ -53,29 +53,29 @@ class SuccessStoryController extends Controller
         $lang= $request->header('lang');
         try{
             $story =$this->successStoryRepository->findById($id,$columns = ['*'],$relations = ['media', 'case'], $appends = []);
-           
             if(!is_null($story)){
-              
-
               $cover_photo=array_filter( $story->media->toArray(),function($val){  return $val['collection_name'] === 'Cover_Photo';  }) ;
-             
-             $images =array_filter( $story->media->toArray(),function($val){  return $val['collection_name'] === 'images_Success_stories';  }) ;
+              $images =array_filter( $story->media->toArray(),function($val){  return $val['collection_name'] === 'images_Success_stories';  }) ;
                 $data=[
-
                     'id' => $story->id,
-
-
-
-
-       'case_id' =>$story->case->id,
+                     'case_id' =>$story->case->id,
                     'case_name' =>   $lang=='en' ? $story->case->name :( is_null( $story->case->ar_name) ?  "" : $story->case->ar_name),
-                   'cover_photo_url' => count($cover_photo)>0  ? !isset($cover_photo[0]['full_url'])?  null: $cover_photo[0]['full_url'] :null,
+                  /// 'cover_photo_url' => count($cover_photo)>0  ? !isset($cover_photo[0]['full_url'])?  null: $cover_photo[0]['full_url'] :null,
                    'vedio_url' => $story->vedio_url,
                     'images'  => array_column($images, 'full_url') ,
                    'description' => $lang=='en' ?   $story->description : $story->ar_description,
                     'created_at' => $story->created_at,
-               
+                    'cover_photo_url' => is_null($story->image_path)?null: env('APP_URL').'/'. $story->image_path,
                  ];
+
+
+                 //increase View Count
+                 $story->update(
+                    [
+                        'views_count'=>$story->views_count+1
+                    ]
+                    );
+                // $this->successStoryRepository->increaseViews($story->id);
                  return Response::respondSuccess($data);
             }
             else{

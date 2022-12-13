@@ -150,6 +150,26 @@ const _nav = [
         style: { paddingLeft: '5rem' },
         to: '/setup/relation',
       },
+
+
+      {
+        component: CNavItem,
+        icon: <CIcon icon={cilList} customClassName="nav-icon" />,
+        name: 'Terms&Conditions',
+        label: 'terms&conditions',
+        style: { paddingLeft: '5rem' },
+        to: '/setup/term&condition',
+      },
+
+      
+      {
+        component: CNavItem,
+        icon: <CIcon icon={cilList} customClassName="nav-icon" />,
+        name: 'faq',
+        label: 'faq',
+        style: { paddingLeft: '5rem' },
+        to: '/setup/faq',
+      },
     ],
   },
 
@@ -163,10 +183,19 @@ const _nav = [
         component: CNavItem,
         icon: <CIcon icon={cilList} customClassName="nav-icon" />,
         name: 'notification',
+        label: 'notifications',
+        style: { paddingLeft: '5rem' },
+        to: '/NotificationManagement/notifications',
+      },
+      {
+        component: CNavItem,
+        icon: <CIcon icon={cilList} customClassName="nav-icon" />,
+        name: 'notification',
         label: 'push_notifications',
         style: { paddingLeft: '5rem' },
         to: '/NotificationManagement/push_notifications',
       },
+
     ],
   },
 

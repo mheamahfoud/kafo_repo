@@ -45,9 +45,11 @@ class DonorController extends Controller
 
         $query = Donor::with(['donations', 'user' => function ($q) {
             $q->orderBy('full_name', 'asc');
-        }, 'city', 'country', 'media' => function ($q) {
-            $q->where('collection_name', 'Donors');
-        }]);
+        }, 'city', 'country','requests' => function ($q) {
+            $q->where('type','donation')
+            ->where('case_id',null);
+        },
+        ]);
 
         if (!empty($request->get('full_name'))) {
 
@@ -61,6 +63,7 @@ class DonorController extends Controller
 
 
         $donors = $query->get();;
+     
         $data = [
             'data' => DonorResouces::collection($donors),
             'total' => count($donors),

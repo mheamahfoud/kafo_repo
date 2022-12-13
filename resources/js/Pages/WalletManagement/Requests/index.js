@@ -22,9 +22,11 @@ import { globalSelector } from '../../../redux/features/global_slice';
 import { setDialogConfirmOpen, setDialogConfirmData } from '../../../redux/features/global_slice';
 import { mainColor } from '../../../config/constants';
 import ModalImage from "react-modal-image-responsive";
+import { Image } from "react-bootstrap";
+import FileViewer from '../../../components/dialogs/File/FileViewer';
 export default function RequestPage() {
     const { t } = useTranslation();
-    const {lang,dialog_confirm_data} = useSelector(globalSelector)
+    const { lang, dialog_confirm_data } = useSelector(globalSelector)
     const [isOpen, setIsOpen] = useState(false);
     const dispatch = useDispatch()
     const { enqueueSnackbar } = useSnackbar();
@@ -40,15 +42,19 @@ export default function RequestPage() {
         style: 'currency',
         currency: 'SYP',
     });
+    const [fileViewPath, setFileViewPath] = useState(null);
+    const handleFileDialog = () => {
+        setFileViewPath(null);
+    };
     const usdPrice = {
         type: 'number',
         width: 130,
-
+        
         valueFormatter: ({ value }) => {
             if (lang == 'ar')
-                return currencyFormatter.format(value)
+                return currencyFormatter.format(value).replace('٫٠٠', '').replace(/\s/g, '')
             else {
-                return (currencyFormatter.format(value).replace('SYP', '') + ' SYP')
+                return (currencyFormatter.format(value).replace('SYP', '')  + ' SYP').replace('.00', '').replace(/\s/g, '')
             }
         },
         cellClassName: 'font-tabular-nums',
@@ -79,14 +85,16 @@ export default function RequestPage() {
                 renderCell: (params) => {
                     // return params.row.image_url
                     return (
-                        <>
+                        <Image
+                            onClick={() => setFileViewPath(params.row.image_path)}
+                            fluid
+                            src={params.row.image_path}
 
-                            <ModalImage
-                                className="img-fluid"
-                                small={params.row.image_path}
-                                large={params.row.image_path}
-                            />
-                        </>
+                            thumbnail
+
+                        />
+
+
                     )
                 }
 
@@ -109,11 +117,15 @@ export default function RequestPage() {
             },
 
             {
-                field: 'created_at',
+                field: 'request_date_time',
                 headerName: t('request_date_time'),
                 type: 'date',
                 valueFormatter: params =>
-                    moment(params?.value).format('YYYY-MM-DD HH:mm:ss'),
+                    moment
+                        .tz(params?.value, 'UTC')
+                        .tz(localStorage.getItem('time_zone') ||'Asia/Damascus')
+                        .format('YYYY-MM-DD HH:mm:ss')
+                ,
                 flex: 1, headerAlign: 'center',
 
             },
@@ -136,21 +148,21 @@ export default function RequestPage() {
                 width: 80,
                 getActions: (params) => [
                     <GridActionsCellItem
-                        icon={<CheckIcon style={{fill:mainColor}}  />}
+                        icon={<CheckIcon style={{ fill: mainColor }} />}
                         label={t('accept')}
                         hidden={!['pending'].includes(params.row.status)}
                         onClick={() => {
                             setData(params.row);
                             dispatch(setDialogConfirmOpen(true))
-                            dispatch(setDialogConfirmData({  message: t('sure_accept'), title: t('accept_request'), id: params.row.id, action: 'accept'  }))
+                            dispatch(setDialogConfirmData({ message: t('sure_accept'), title: t('accept_request'), id: params.row.id, action: 'accept' }))
 
-                         
+
                         }
 
                         }
                     />,
                     <GridActionsCellItem
-                        icon={<RemoveIcon style={{fill:mainColor}}  />}
+                        icon={<RemoveIcon style={{ fill: mainColor }} />}
                         hidden={!['pending'].includes(params.row.status)}
                         label={t('reject')}
                         onClick={() => {
@@ -218,11 +230,11 @@ export default function RequestPage() {
 
     };
     const handleDialogYes = () => {
-        
+
         if (dialog_confirm_data.action == 'accept') {
-            
+
             dispatch(setDialogConfirmOpen(false))
-            dispatch(setDialogConfirmData({ message: '', title: '', id: null, action: '' } ))
+            dispatch(setDialogConfirmData({ message: '', title: '', id: null, action: '' }))
 
             setAcceptDialogOpen(true)
             // PublishCase({ 'id': dialog_confirm_data.id }).then(
@@ -270,10 +282,10 @@ export default function RequestPage() {
                             ...rows.slice(0, index),
                             temp,
                             ...rows.slice(index + 1, rows.length)]);
-                            setDialogConfirmData
-                            dispatch(setDialogConfirmOpen(false))
-                            dispatch(setDialogConfirmData({ type: 'set', dialog_confirm_data: { message: '', title: '', id: null, action: '' }}))
-                        
+                        setDialogConfirmData
+                        dispatch(setDialogConfirmOpen(false))
+                        dispatch(setDialogConfirmData({ type: 'set', dialog_confirm_data: { message: '', title: '', id: null, action: '' } }))
+
                         enqueueSnackbar(t('updated_successfully'), {
                             variant: 'success',
                             anchorOrigin: {
@@ -295,11 +307,11 @@ export default function RequestPage() {
 
                 }
             )
-            
+
 
         }
 
-     
+
 
     };
 
@@ -308,10 +320,10 @@ export default function RequestPage() {
 
             <Paper className={GeneralStyles.paperhearder} elevation={5}>
 
-                <DataTable rows={rows} columns={columns} setAddDialogOpen={undefined} loading={loading}  type={'requests'}/>
+                <DataTable rows={rows} columns={columns} setAddDialogOpen={undefined} loading={loading} type={'requests'} />
 
 
-            
+
 
                 {(
                     <AcceptRequestDialog
@@ -328,7 +340,12 @@ export default function RequestPage() {
                     callBack={handleDialogYes}
                 />
 
-
+                {fileViewPath && (
+                    <FileViewer
+                        path={fileViewPath}
+                        handleFileDialog={handleFileDialog}
+                    />
+                )}
             </Paper>
 
         </React.Fragment>

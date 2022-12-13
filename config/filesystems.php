@@ -96,6 +96,13 @@ return [
             'driver' => 'local',
             'root' => public_path('uploads/notifications'),
         ],
+
+
+        'successStory_files' => [
+            'driver' => 'local',
+            'root' => public_path('uploads/successStories'),
+        ],
+
         
     ],
 

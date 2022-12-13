@@ -38,7 +38,7 @@ Route::get('edit_profile','Mobile\UserManagment\UserManagmentController@editMyPr
 
 Route::get('city_list','Mobile\Setup\SetUpController@index_city');
 Route::get('country_list','Mobile\Setup\SetUpController@index_country');
-
+Route::get('terms_conditions','Mobile\Setup\SetUpController@getConditionTerms');
 
 
 ////additional api
@@ -57,3 +57,10 @@ Route::post('setFcmToken','Mobile\UserManagment\UserManagmentController@setFcmTo
 Route::get('notifications_count','Mobile\Notifations\NotificationController@getNotificationsCount');
 Route::get('notifications_list','Mobile\Notifations\NotificationController@getNotificationsContent');
 Route::post('read_notifcations','Mobile\Notifations\NotificationController@readNotifications');
+Route::post('logout','Mobile\UserManagment\UserManagmentController@logout');
+
+
+
+/////get FAQS
+Route::get('get_faqs','Mobile\Setup\SetUpController@getFaqs');
+

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Components\Core\Utilities\Helpers;
 use App\Models\CaseDonation;
 use App\Models\SuccessStory;
+use App\Models\SuccessStoryFiles;
 use App\Models\Donor;
 use Spatie\Permission\Models\Role;
 use App\Http\Resources\Admin\SuccessStoryResouces;
@@ -69,11 +70,12 @@ public function index(Request $request)
                     'case_id' => 'required|unique:success_cases,case_id',
                     'description' => 'required',
                     'ar_description' => 'required',
+                    'cover_photo' => 'required',
                     
                    // 'cover_photo' => 'required',
                 ],
                 [
-                    'required'  => 'The :attribute field is required.',
+                    'required'  => Lang::get('site.required', ['name' => ':attribute'], $lang),
                     'unique'    =>  $lang == 'en' ? 'case  is already used' : 'الحالة تم استخدامها من قبل' ,
                 ]
             );
@@ -92,14 +94,18 @@ public function index(Request $request)
                 $input['ar_description']=$request->ar_description;
                 $input['vedio_url']=$request->vedio_url;
                 $success_story = SuccessStory::create($input);
-                $this->addMedias($request->cover_photo,$success_story , 'Cover_Photo' );
+
+                $image_path ="";
+                if (isset($request->cover_photo)) {
+                    SuccessStory::saveCoverPhoto($request->cover_photo,$success_story);
+                }
                 $this->addMultiMedias($request->images,$success_story , 'images_Success_stories' ,[]);
-             //   File::cleanDirectory(public_path('uploads/'.config('constants.temp_upload_folder')));
+                   $success_story->update($input);
+                 ///  SuccessStoryFiles::saveFiles($request->files,$success_story->id);
                 DB::commit();
-                $case_media_cover = SuccessStory::where('id', $success_story->id )->with( ['case','media'=> function ($q) {
-                    $q->where('collection_name', 'Cover_Photo');}])->first();
-                $success_story->setAttribute('image_url',count($case_media_cover->media)> 0 ? $case_media_cover->media[0]['full_url']: '' );
-                $success_story->setAttribute('display_name',count($case_media_cover->media)> 0 ? $case_media_cover->media[0]['display_name']: '' );
+                $case_media_cover = SuccessStory::where('id', $success_story->id )->with( ['case'])->first();
+             //   $success_story->setAttribute('image_url',count($case_media_cover->media)> 0 ? $case_media_cover->media[0]['full_url']: '' );
+               // $success_story->setAttribute('display_name',count($case_media_cover->media)> 0 ? $case_media_cover->media[0]['display_name']: '' );
                 $success_story->setAttribute('is_active',1 );
                 $success_story->setAttribute('case_name', $case_media_cover->name);
                 $success_story->setAttribute('views_count', $case_media_cover->views_count);
@@ -130,8 +136,8 @@ public function index(Request $request)
         $lang=$request->cookie('current_language');
      
             
-            $success_story = SuccessStory::with(['media'=> function ($q) {
-                $q->where('collection_name', 'images_Success_stories');}])->find($request->id);
+        $success_story = SuccessStory::with(['media'=> function ($q) {
+            $q->where('collection_name', 'images_Success_stories');}])->find($request->id);
                 unset($case->created_at);
                 unset($case->created_by);
                 unset($case->updated_by);
@@ -159,10 +165,10 @@ public function index(Request $request)
                     'case_id' => 'required|unique:success_cases,case_id,'. $success_story->id,
                     'description' => 'required',
                     'ar_description' => 'required',
-                 //   'cover_photo' => 'required',
+                    'cover_photo' => 'required',
                 ],
                 [
-                    'required'  => 'The :attribute field is required.',
+                    'required'  => Lang::get('site.required', ['name' => ':attribute'], $lang),
                 ]
             );
 
@@ -179,16 +185,21 @@ public function index(Request $request)
                     $input['ar_description']=$request->ar_description;
                     $input['description']=$request->description;
                     $input['vedio_url']=$request->vedio_url;
-                    $success_story->update($input);
-                    $this->addMedias($request->cover_photo,$success_story , 'Cover_Photo' );
-                    $this->addMultiMedias($request->images,$success_story , 'images_Success_stories',$request->delete_files );
-                    //File::cleanDirectory(public_path('uploads/'.config('constants.temp_upload_folder')));
-                    DB::commit();
-                    $case_media_cover = SuccessStory::where('id', $success_story->id )->with( ['media'=> function ($q) {
-                        $q->where('collection_name', 'Cover_Photo');}])->first();
 
-                    $success_story->setAttribute('image_url',count($case_media_cover->media)> 0 ? $case_media_cover->media[0]['full_url']: '' );
-                    $success_story->setAttribute('display_name',count($case_media_cover->media)> 0 ? $case_media_cover->media[0]['display_name']: '' );
+                    if (isset($request->cover_photo) && $request->cover_photo!='old_files') {
+                        SuccessStory::saveCoverPhoto($request->cover_photo,$success_story);
+                    }
+                    $success_story->update($input);
+                  //  SuccessStoryFiles::saveFiles($request->new_files,$success_story->id);
+                   
+                  $this->addMultiMedias($request->images,$success_story , 'images_Success_stories',$request->delete_files );
+               /// File::cleanDirectory(public_path('uploads/'.config('constants.temp_upload_folder')));
+                    DB::commit();
+                   // $case_media_cover = SuccessStory::where('id', $success_story->id )->with( ['media'=> function ($q) {
+                     //   $q->where('collection_name', 'Cover_Photo');}])->first();
+
+                 //   $success_story->setAttribute('image_url',count($case_media_cover->media)> 0 ? $case_media_cover->media[0]['full_url']: '' );
+                ///    $success_story->setAttribute('display_name',count($case_media_cover->media)> 0 ? $case_media_cover->media[0]['display_name']: '' );
                  
                     $success_story->setAttribute('case_name', $success_story->case->name);
                     $success_story->setAttribute('created_by', $success_story->creator->full_name);

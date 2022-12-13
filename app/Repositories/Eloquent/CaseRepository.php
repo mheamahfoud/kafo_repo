@@ -58,9 +58,14 @@ class CaseRepository extends BaseRepository implements CaseRepositoryInterface
       
     public function donate(array $payload): ?CaseDonor
     {
-        $case=$this->model->find($payload['case_id']);
-        $case->updated_at = Carbon::now();
-        $case->update();
+        if(!is_null($payload['case_id'])){
+            $case=$this->model->find($payload['case_id']);
+             $case->updated_at = Carbon::now();
+             $case->update();
+       }
+       else{
+        unset($payload['type']);
+       }
         $payload['created_at']= Carbon::now();
         $model = $this->modelCaseDonor->create($payload);
 

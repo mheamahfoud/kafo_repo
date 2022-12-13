@@ -1,0 +1,66 @@
+<?php
+
+return array (
+    'success_added' => 'تم الإضافة',
+    'success_update' => 'تم التعديل',
+    'success_deleted' => 'تم الحذف',
+    'unauthenticate'=>'قم بتسجيل الدخول  ',
+    'success_process' => 'العملية تمت بنجاح',
+    'success_donated' =>  'تم التبرع بنجاح',
+    'unAuthorize'=>'المستخدم غير مفعل',
+    'user_not_found'=>'المستخدم غير موجود',
+        'order_not_found'=>'الطلب غير موجود',
+    'object_not_found'=>' :name غير موجود',
+    'client'=>'المتبرع',
+    'status'=>'الحالة',
+    'price'=>'السعر',
+    'required'=>' :name مطلوب',
+    'already_existed'=>' :name موجود مسبقا',
+    'user'=>'المستخدم',
+    'publish_already'=>'تم نشر الحالة مسبقاً',
+    'close_case'=>"تم إغلاق الحالة من قبل",
+    'cancel_case'=>"اتم إلغاء الحالة من قبل",
+    'publish_not_completed'=>'الحالة غير مكتمة للاغلاق', ???
+    'case'=>'الحالة',
+    'object_not_active'=>' :name غير مفعل',
+    'validation_type_related_to_validation'=>'نمط التحقق مرتبط بتحققات ',??
+
+    'provider_related_to_validation'=>'المزود مرتبط بتحققات ',??
+    'provider_related_to_cases'=>'المزود مرتبط بحالات ',??
+
+    
+    'country_related_to_users'=>'البلد مرتبط بمستخدمين',
+    'city_related_to_users'=>'المدينة مرتبطة بمستخدمين',
+    'images_required'=>"حقل الصور مطلوب",
+    "Donor"=>"المستخدم",
+    "donor"=>"المستخدم",
+    "wallet_not_enough"=>"لايوجد المال الكافي في المحفظة الرجاء إعادة شحن المحفظة ",
+	updated
+    "already_follower"=>"متابع لهذه  الحالة من قبل",
+    "not_follower"=>"لست متابع لهذه  الحالة من قبل"      ,
+    'story'=>'القصة',
+    'full_name'=>'الاسم الكامل',
+    'secret_name'=>'الاسم السري',
+    'unique'=>' :name موجود مسبقا"',
+
+ 
+	'min'=>'الحد الأدنى للبملغ غير مكتمل',
+     updated
+    'numeric'=>'إدخال رقم',
+
+    
+    "draft"=>"مسودة",
+    "canceled"=>"ملغاة",
+    "rejected"=>"مرفوضة",
+    "completed"=>"مكتملة",
+    "closed"=>"مغلقة",
+     updated
+    "published"=>"تم النشر",
+    "paid"=>"مدفوعة",
+    "not_paid"=>"غير مدفوعة",
+    "Female"=>"أنثى",
+    "Male"=>"ذكر",
+    "receipt_image"=>"إشعار الدفع",
+    'donation_bigger_remainging'=>'شكراَ لكم لقد تم استرجاع :name من مقدار التبرع وذلك لاكتمال الحالة'
+
+);

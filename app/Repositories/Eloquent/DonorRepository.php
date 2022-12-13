@@ -10,6 +10,7 @@ use App\Repositories\Interfaces\DonorRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use App\Components\Core\Utilities\Helpers;
+use App\Models\UserCode;
 class DonorRepository extends BaseRepository implements DonorRepositoryInterface
 {
     /**
@@ -19,17 +20,19 @@ class DonorRepository extends BaseRepository implements DonorRepositoryInterface
     protected $userModel;
     protected $walletModel;
     protected $walletRequestModel;
+    protected $userCodeModel;
     /**
      * BaseRepository constructor.
      *
      * @param Model $model
      */
-    public function __construct(Donor $model , User $userModel ,Wallet $walletModel ,RequestWallet $walletRequestModel  )
+    public function __construct(Donor $model , User $userModel ,Wallet $walletModel ,RequestWallet $walletRequestModel ,UserCode $userCodeModel )
     {
         $this->model = $model;
         $this->userModel = $userModel;
         $this->walletModel = $walletModel;
         $this->walletRequestModel=$walletRequestModel;
+         $this->userCodeModel=$userCodeModel;
     
     }
 
@@ -69,6 +72,12 @@ class DonorRepository extends BaseRepository implements DonorRepositoryInterface
         $donor = $this->model->with('user','media')->findOrfail($donor_id);
         $payload['updated_at'] = Carbon::now();
         $payload['is_active'] =$donor->user->is_active;
+         if(!isset($payload['country_id']) || is_null($payload['country_id'])){
+            $payload['country_id']=null;
+        }
+        if(!isset($payload['city_id']) || is_null($payload['city_id'])){
+            $payload['city_id']=null;
+        }
         $donor->update($payload);
         $donor->user->update($payload);
         return  $donor;
@@ -150,7 +159,7 @@ class DonorRepository extends BaseRepository implements DonorRepositoryInterface
         
         return  $this->walletRequestModel
                 ->with("case")
-                ->where('status','!=','rejected')
+                //->where('status','!=','rejected')
                 ->where('donor_id','=',$donor_id )
               //  ->selectRaw("amount as amount")
                 //->selectRaw("created_at  as date")
@@ -169,4 +178,36 @@ class DonorRepository extends BaseRepository implements DonorRepositoryInterface
         ->sum('amount');
     }
     
+    
+    
+    public function CreateUserCode($otp,$user_id)
+    {
+        $payload['otp']=$otp;
+        $payload['created_at']=Carbon::now();
+        $payload['expired_date']=Carbon::now()->addMinute(15);
+        $payload['updated_at']=Carbon::now();
+        $payload['created_by']=$user_id;
+        $payload['is_confirm']=0;
+    
+        $userCode=$this->userCodeModel->where('user_id',$user_id)->first();
+      
+       if(is_null($userCode)){
+        $payload['user_id']=$user_id;
+        $payload['number_of_times']=1;
+        $this->userCodeModel->create($payload);
+       }
+       else{
+        $payload['number_of_times']=$userCode->number_of_times  +1;
+          $this->userCodeModel->findOrfail($userCode->id)->update($payload);
+        
+       }
+    }
+
+
+    public function getUserCode($user_id):  ?UserCode
+    {
+       
+       return $this->userCodeModel->where('user_id',$user_id)->first();
+
+    }
 }

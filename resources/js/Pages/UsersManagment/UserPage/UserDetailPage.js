@@ -10,6 +10,7 @@ import DonationsTab from './Tabs/DonationsTab'
 import GeneralInfoTab from './Tabs/GeneralInfoTab';
 import { useLocation } from 'react-router-dom'
 import { GetDonorDetails } from '../../../api/userManagment/donor';
+import LoadingPage from '../../../components/progressLoading/LoadingPage';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -40,11 +41,13 @@ export default function UserDetailPage() {
     const [selectedTab, setSelectedTab] = React.useState(0);
     const [currentData, setCurrentData] = React.useState({});
     const currentLocation = useLocation().state
+    const [loading, setLoading] = React.useState(true);
     useEffect(() => {
 
         if (currentLocation.id != undefined) {
             GetDonorDetails({ 'id': currentLocation.id }).then(
                 (res) => {
+                    setLoading(false)
                     console.log(res.data)
                     setCurrentData(res.data)
                 }
@@ -63,31 +66,34 @@ export default function UserDetailPage() {
     ];
 
     return (
-        <React.Fragment>
+        loading ?
+            <LoadingPage />
+            :
+            <React.Fragment>
 
-            <Grid container>
-                <Grid item xs={12} style={{ paddingRight: '12px' }}>
-                    <CustomAppBar
-                        labels={tabLabels}
-                        setSelectedTab={setSelectedTab}
-                    />
-                    {<TabWrapper
-                        index={0}
-                        selectedTab={selectedTab}
-                    >
-                        <GeneralInfoTab donor={currentData} />
-                    </TabWrapper>}
+                <Grid container>
+                    <Grid item xs={12} style={{ paddingRight: '12px' }}>
+                        <CustomAppBar
+                            labels={tabLabels}
+                            setSelectedTab={setSelectedTab}
+                        />
+                        {<TabWrapper
+                            index={0}
+                            selectedTab={selectedTab}
+                        >
+                            <GeneralInfoTab donor={currentData} />
+                        </TabWrapper>}
 
-                    {<TabWrapper
-                        index={1}
-                        selectedTab={selectedTab}
-                    >
-                        <DonationsTab donor={currentData} />
-                    </TabWrapper>}
+                        {<TabWrapper
+                            index={1}
+                            selectedTab={selectedTab}
+                        >
+                            <DonationsTab donor={currentData} />
+                        </TabWrapper>}
 
+                    </Grid>
                 </Grid>
-            </Grid>
-        </React.Fragment>
+            </React.Fragment>
 
     );
 }

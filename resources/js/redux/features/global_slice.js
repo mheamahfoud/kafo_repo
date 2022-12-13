@@ -6,7 +6,7 @@ export const globalSlice = createSlice({
         sidebarShow: true,
         sideHide: false,
         dialog_confirm_open: false,
-        lang: 'en',
+        lang: localStorage.getItem('current_language') || 'en',
         dialog_confirm_data: { is_active: false, id: null },
         dialog_reason_case_open: false,
         dialog_reason_case_text: '',

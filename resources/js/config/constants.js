@@ -8,7 +8,7 @@ export const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|(
 export const urlRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/
 
 //https://kafo.90-soft.com
-export const domainUrl =false    ? 'http://localhost:8000/' : 'https://kafo.90-soft.com/';
+export const domainUrl =true   ? 'http://localhost:8000/' : 'https://kafo.90-soft.com/';
 
 
 

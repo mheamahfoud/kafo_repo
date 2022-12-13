@@ -31,8 +31,9 @@ export default function AddSuccessStoryDialog({ open, ...props }) {
         case_id: Yup.string().required(t('required')),
         vedio_url: Yup.string().matches(urlRegExp, t('url_valid')),
         description: Yup.string().required(t('required')),
-        cover_photo: Yup.array().of(Yup.string()).required(t('required')),
+        cover_photo: Yup.string().required(t('required'))
     });
+  
     const handleClose = () => {
         props.onClose();
     };
@@ -55,13 +56,16 @@ export default function AddSuccessStoryDialog({ open, ...props }) {
                 validateOnChange={true}
                 enableReinitialize={true}
                 validationSchema={CaseSchema}
-                initialValues={{'images':[]}}
+                initialValues={{'images': []}}
                 initialStatus={{ edit: false }}
                 onSubmit={async (values) => {
-                    values['images'] = values['images'] != undefined ? values['images'] .map(x => x.file_name).filter(function (el) {
+                 /*   values['images'] = values['images'] != undefined ? values['images'] .map(x => x.file_name).filter(function (el) {
+                        return el != null;
+                    }) : undefined;*/
+                    setLoading(true)
+                    values['images'] = values['images'] != undefined ? values['images'].map(x => x.file_name).filter(function (el) {
                         return el != null;
                     }) : undefined;
-                    setLoading(true)
                     CreateSuccessStory(values).then((result) => {
                             
                         // alert(JSON.stringify(result.success))
@@ -118,7 +122,7 @@ export default function AddSuccessStoryDialog({ open, ...props }) {
 
                         <DialogContent>
                             <DialogContentText></DialogContentText>
-                            {<SuccessStoryForm image_url={undefined} />}
+                            {<SuccessStoryForm image_url={undefined}  />}
                         </DialogContent>
                         <DialogActions>
                             <CancelButton handleClose={handleClose} />

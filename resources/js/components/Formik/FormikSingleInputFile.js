@@ -16,6 +16,8 @@ import { uploadTempFile } from '../../api/images/image';
 import { Image, } from "react-bootstrap";
 import { mainColor } from '../../config/constants';
 import "./style.css"
+import ImageUploading from "react-images-uploading";
+import {ProgressBar} from 'react-bootstrap';
 const FInput = ({ field, form, ...props }) => {
     return <TextField
         id="standard-number"
@@ -75,8 +77,9 @@ export default function FormikSingleInputFile({
     const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
 
+    
     const handleUploadImage = (event) => {
-        setLoading(true)
+        setUploadedImage(undefined)
         if (event.target.files && event.target.files[0]) {
             let data = new FormData();
 
@@ -97,11 +100,11 @@ export default function FormikSingleInputFile({
             setUploadedImage(URL.createObjectURL(event.target.files[0]));
         }
         setLoading(false)
-        return;
+       // return;
     };
     useEffect(() => {
         if (image_url != undefined) {
-            setFieldValue('image', undefined);
+            setFieldValue(props.name, 'old_files');
             setUploadedImage(image_url);
         }
 
@@ -185,14 +188,14 @@ export default function FormikSingleInputFile({
                 </Box>
 
 
-                {(uploadedImage && !loading) ? (<Box  >
+                {!loading ? (uploadedImage && (<Box  >
                     <Image
                         src={uploadedImage}
                         thumbnail
                         style={{ width: '120px' }}
                     />
 
-                </Box>) : <CircularProgress style={{ color: mainColor,  }} />}
+                </Box>)) : <CircularProgress style={{ color: mainColor,  }} />}
 
 
 

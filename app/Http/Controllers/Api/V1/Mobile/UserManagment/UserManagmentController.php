@@ -17,7 +17,7 @@ use Exception;
 use Illuminate\Support\Facades\Lang as Lang;
 use Spatie\MediaLibrary\Models\Media;
 use Illuminate\Support\Facades\Storage;
-
+use App\Services\MSG91;
 use function PHPUnit\Framework\isNull;
 
 #use Lang;
@@ -41,9 +41,7 @@ class UserManagmentController extends Controller
 
 
 
-
-
-    public function signin(Request $request)
+public function signin(Request $request)
     {
         $lang = $request->header('lang');
         $validate = validator(
@@ -59,21 +57,36 @@ class UserManagmentController extends Controller
             return Response::respondErrorValidation($validate->errors()->first());
         }
         try {
-
+           
             $user = $this->donorRepository->singin($request->mobile);
 
             if (!is_null($user)) {
                 if (!$user->is_active) {
                     return Response::respondErrorUnAuthorize(__('site.unAuthorize', [], $lang));
                 }
+                $otp = rand(1000, 9999);
+                $mobile=$user->mobile;
+                if(substr($user->mobile, 0, 1)=="0"){
+                      $mobile ="963".substr($user->mobile,1);
+                }
+                DB::beginTransaction();
+               
+               
+                $this->donorRepository->CreateUserCode($otp,$user->id);
+                MSG91::sendSMS($otp,$mobile);
+                DB::commit();
 
-                return Response::respondSuccess(
+            
+
+              /*  return Response::respondSuccess(
                     [
                         'id' => $user->donor_id,
                         'mobile' => $user->mobile,
                         'token' => $user->token,
                     ]
-                );
+                );*/
+                
+                 return Response::respondSuccess('success');
             } else {
                 $message = Lang::get('site.object_not_found', ['name' => __('site.user', [], $lang)], $lang);
                 return Response::respondError($message);
@@ -83,7 +96,6 @@ class UserManagmentController extends Controller
             return Response::respondError($e);
         }
     }
-
 
     public function logout(Request $request)
     {
@@ -110,7 +122,13 @@ class UserManagmentController extends Controller
         if (Auth::guard('api')->check()) {
 
             $token = Auth::guard('api')->user()->token();
+           
             $token->revoke();
+               User::find(Auth::guard('api')->user()->id)->update([
+                'fcm_token' => null,
+                'mobile_verfied' => 0,
+                'mobile_verfied_at' => null,
+            ]);
 
             if ($lang == "en") {
 
@@ -222,7 +240,9 @@ class UserManagmentController extends Controller
                     'city' => !is_null($donor->city) ?   $lang  =='en'  ? $donor->city->name :$donor->city->ar_name : null,
                     'wallet'=>!is_null($donor->wallet)  ?  Helpers::number_format_short($donor->wallet->amount)  :  "0",
                      'cases'=>Helpers::number_format_short(count($this->caseRepository->GetSumCaseDonationsByDonor($donor_id))),
-                     'donations'=>Helpers::number_format_short($this->caseRepository->GetSumDonationsByDonor($donor_id)),
+                                     'donations'=>Helpers::number_format_short($this->caseRepository->GetSumDonationsByDonor($donor_id))
+                                     //+$this->donorRepository//->GetSumDonationsForAppByDonor//($donor_id)),
+
                     
 
 
@@ -379,10 +399,12 @@ class UserManagmentController extends Controller
                     'last_charge_amount' => Helpers::number_format_short($donor->wallet->last_charge_amount),
                     'last_charge_date' => $donor->wallet->last_charge_date,
                     'charge_count' => Helpers::number_format_short($donor->wallet->charge_count),
-                              'total_donation_amount' => Helpers::number_format_short(array_sum(array_column($donor->donations->toArray(), 'amount'))+$this->donorRepository->GetSumDonationsForAppByDonor($donor_id)),
+                              'total_donation_amount' => Helpers::number_format_short(array_sum(array_column($donor->donations->toArray(), 'amount'))),
+                              
+                              //+$this->donorRepository//->GetSumDonationsForAppByDonor($donor_id)),
 
 
-                    'donations' => array_map(
+                   /* 'donations' => array_map(
                         function ($val1) use ($lang ) {
                             return [
                                 'case_name' =>  $lang =='en'  ? $val1['case']['name'] :$val1['case']['ar_name'] ,
@@ -391,7 +413,7 @@ class UserManagmentController extends Controller
                             ];
                         },
                         $donor->donations->toArray()
-                    )
+                    )*/
 
                 ];
 
@@ -468,13 +490,14 @@ class UserManagmentController extends Controller
             $donation_kafo=$lang=='en'?'donation For Kafo':'تبرع للتطبيق';
             $pending_request=$lang=='en'?'Charge Pending':'قيد الانتظار';
               $accepted_request=$lang=='en'?'Charge Accepted':'تمت الموافقة';
-            foreach($requests as $item){
+               $rejected_request=$lang=='en'?'Charge Rejected':'لم تتم الموافقة';
+               foreach($requests as $item){
                 $case_name='';
                 if($item['type'] =='donation'){
                     $case_name=!is_null($item['case']) ? ($lang=='en' ? $item['case']["name"] :$item['case']["ar_name"]):$donation_kafo;
                 }
                 else{
-                   $case_name= $item['status']=='pending'? $pending_request : $accepted_request;
+                   $case_name= $item['status']=='pending'? $pending_request : ($item['status']=='rejected' ?$rejected_request: $accepted_request );
                 }
                 array_push(
                         $requests_items,
@@ -509,11 +532,129 @@ class UserManagmentController extends Controller
 
 
 
-    public function setFcmToken(Request $request)
+     public function setFcmToken(Request $request)
     {
+        $lang = $request->header('lang');
+        $users=User::where('fcm_token',$request->token)->where('id','!=',Auth::guard('api')->user()->id)->get();
+         
+        if(count($users) > 0){
+             foreach($users as $user){
+                $user->update([
+                    'fcm_token' => null,
+                ]);
+             }
+        }
         User::find(Auth::guard('api')->user()->id)->update([
             'fcm_token' => $request->token,
         ]);
         return Response::respondSuccess('success');
     }
+    
+  public function verifyCode(Request $request)
+    {
+       $lang = $request->header('lang');
+        $validate = validator(
+            $request->all(),
+            [
+                'mobile' => 'required',
+                  'otp' => 'required',
+            ],
+            [
+                'required'  => Lang::get('site.required', ['name' => ':attribute'], $lang),
+            ]
+        );
+        if ($validate->fails()) {
+            return Response::respondErrorValidation($validate->errors()->first());
+        }
+        try {
+           
+           $user = $this->donorRepository->singin($request->mobile);
+          
+            if (!is_null($user)) {
+                
+                if (!$user->is_active) {
+                    return Response::respondErrorUnAuthorize(__('site.unAuthorize', [], $lang));
+                }
+                $userCode = $this->donorRepository->getUserCode($user->id);
+
+
+/*echo json_encode($userCode->expired_date);
+
+echo json_encode(Carbon::now());
+ 
+                   die();*/
+               if(!$userCode->is_confirm){
+                    if($request->otp ==$userCode->otp &&Carbon::now() < $userCode->expired_date ){
+              
+                        User::find($user->id)->update([
+                            'mobile_verfied' => 1,
+                            'mobile_verfied_at' => Carbon::now(),
+                        ]);
+            
+                           $userCode->update([
+                                'is_confirm' => 1,
+                                   // 'mobile_verfied_at' => Carbon::now(),
+                            ]);
+                            
+                              return Response::respondSuccess(
+                                [
+                                    'id' => $user->donor_id,
+                                    'mobile' => $user->mobile,
+                                    'token' => $user->token,
+                                ]
+                            );
+                        
+                      ///  return Response::respondSuccess('success');
+                        
+                    }
+                    else if($request->otp ==$userCode->otp &&Carbon::now() > $userCode->expired_date){
+                   
+                        $message = Lang::get('site.code_expired', [], $lang);
+                        return Response::respondError($message);
+            
+                    }
+                    else{
+                        
+                      
+                        $message = Lang::get('site.code_not_match', [], $lang);
+                        return Response::respondError($message);
+            
+                    }
+               }else{
+                
+                  return Response::respondSuccess(
+                                [
+                                    'id' => $user->donor_id,
+                                    'mobile' => $user->mobile,
+                                    'token' => $user->token,
+                                ]
+                            );
+               }
+       
+       
+       
+       
+
+              
+                
+             //    return Response::respondSuccess('success');
+            } else {
+                $message = Lang::get('site.object_not_found', ['name' => __('site.user', [], $lang)], $lang);
+                return Response::respondError($message);
+            }
+        
+        
+        
+        
+        
+        
+        
+   
+      
+    }
+    catch (Exception $e) {
+            DB::rollBack();
+            return Response::respondError($e);
+        }
+}
 }

@@ -29,7 +29,7 @@ class DonorResouces extends JsonResource
             'gender'=>$this->gender,
             'created_at'=>$this->created_at,
             'donation_count'=> count($this->donations),
-            'total_donation_amount'=> array_sum(array_column($this->donations->toArray(), 'amount')) ,
+            'total_donation_amount'=> array_sum(array_column($this->donations->toArray(), 'amount'))  ,
 
              
 

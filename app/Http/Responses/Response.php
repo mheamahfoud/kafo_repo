@@ -49,6 +49,17 @@ class Response {
             'status_code' => 400
         ]);
     }
+
+    public static function respondErrorVerificationCode($message, $code = 1){
+        return response()->json([
+            'success' => false,
+            'data' => null,
+            'error_description' => $message,
+            'status_code' => 405
+        ]);
+    }
+
+   
     public static function respondOut($message){
         return response()->json([
             'success' => false,

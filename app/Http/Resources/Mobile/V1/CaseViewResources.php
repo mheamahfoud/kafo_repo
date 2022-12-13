@@ -19,6 +19,7 @@ class CaseViewResources extends JsonResource
         $total_cost=array_sum(array_column($this->costs->toArray(), 'value'));
         return [
             'id' => $this->id,
+            'cover_photo_url' => count( $this->media)>0 ?  $this->media[0]['full_url'] :null,
             'wallet_amount'=> $this->wallet_amount,
             'contain_secret_info'=>is_null($this->secret_info_id) ? false:$this->has_donate,
             'is_follow'=>is_null($this->follower)?false:true,

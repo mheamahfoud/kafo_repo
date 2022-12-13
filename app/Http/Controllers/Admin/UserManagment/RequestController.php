@@ -20,7 +20,9 @@ use App\Http\Resources\Admin\RequestResouces;
 use Lang;
 use App\Models\Wallet;
 use Carbon\Carbon;
-
+use App\Notifications\SendPushNotification;
+use App\Models\NotificationModel;
+use Notification;
 class RequestController extends Controller
 {
     /**
@@ -137,6 +139,23 @@ class RequestController extends Controller
                     $request_one->image_path = $image_path;
                 }
                 $request_one->update();
+                
+                
+                 ///send Notification 
+            $fcmTokens = User::whereNotNull('fcm_token')->where('id', $donor->user_id)->pluck('fcm_token')->toArray();
+            $title='Charge Wallet';
+           // $body='Your wallet is charged with the required amount:'. ' '//.number_format($request->amount).' '. 'SYP';
+ $body='تمت تعبئة محفظتك بالمبلغ المطلوب'  .number_format($request_one->amount).  ' ل.س
+    ';
+            Notification::send(null, new SendPushNotification($title, $body,null,null, $fcmTokens));
+            $notification = [];
+            $notification['sender_id'] = Auth::guard('api')->user()->id;
+            $notification['receiver_id'] =  $donor->user_id;
+            $notification['title'] =$title;
+            $notification['description'] = $body;
+            $notification['type'] = 'charge_wallet';
+            $notification['image_path'] = null;
+            NotificationModel::create($notification);
                 DB::commit();
                 $message = Lang::get('site.success_added', [], $lang);
                 return Response::respondSuccess($request_one);
@@ -242,6 +261,23 @@ class RequestController extends Controller
                 $wallet->update();
 
 
+ ///send Notification 
+            $fcmTokens = User::whereNotNull('fcm_token')->where('id', $donor->user_id)->pluck('fcm_token')->toArray();
+            $title='Charge Wallet';
+           // $body='Your wallet is charged with the required amount:'. ' '//.number_format($request->amount).' '. 'SYP';
+            
+            $body='تمت تعبئة محفظتك بالمبلغ المطلوب'  .number_format($request->amount).  ' ل.س
+';
+            Notification::send(null, new SendPushNotification($title, $body,null,null, $fcmTokens));
+            $notification = [];
+            $notification['sender_id'] = Auth::guard('api')->user()->id;
+            $notification['receiver_id'] =  $donor->user_id;
+            $notification['title'] =$title;
+            $notification['description'] = $body;
+            $notification['type'] = 'charge_wallet';
+            $notification['image_path'] = null;
+            NotificationModel::create($notification);
+            
               //  $this->addMedias($request->receipt_image, $donor, 'receipt_image');
                 DB::commit();
                 return Response::respondSuccess($donor);

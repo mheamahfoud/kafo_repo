@@ -293,9 +293,13 @@ class CaseController extends Controller
         $lang = $request->cookie('current_language');
 
         try {
-            $case = CaseDonation::find($request->id);
+            $case = CaseDonation::with('stories')->find($request->id);
             if (!is_null($case)) {
                 DB::beginTransaction();
+                if($case->is_active){
+                    $message = Lang::get('site.case_related_with_stories', [], $lang);
+                     return Response::respondError($message);
+                }
                 $data['updated_at'] = Carbon::now();
                 $data['updated_by'] = Auth::guard('api')->user()->id;
                 $data['is_active'] = !$case->is_active;

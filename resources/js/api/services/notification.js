@@ -30,3 +30,14 @@ export const sendPushNotification = async (values) => {
     });
     return await response.data;
 };
+
+
+export const GetNotifications = async (lang) => {
+    const response = await http.post('get_notifications', {
+    });
+    if (response.data.success)
+       return await response.data;
+    else {
+       alert('there is error')
+    }
+ };

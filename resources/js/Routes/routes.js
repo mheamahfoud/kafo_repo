@@ -19,7 +19,14 @@ const ViewSuccessStoryPage=React.lazy(()=>import("../Pages/DonationManagment/suc
 
 const RelationPage =React.lazy(()=>import('../Pages/Setups/RelationPage/Index'))
 
+const TermConditionPage =React.lazy(()=>import('../Pages/Setups/TermConditionPage/Index'))
+const FAQPage =React.lazy(()=>import('../Pages/Setups/FAQPAge/Index'))
+
+const CreateQuestionage =React.lazy(()=>import('../Pages/Setups/FAQPAge/CreateQuestionPage'))
+const EditQuestionage =React.lazy(()=>import('../Pages/Setups/FAQPAge/EditQuestionPage'))
+
 const NotificationPage =React.lazy(()=>import('../Pages/NotificationManagment/index'))
+const PushNotificationPage =React.lazy(()=>import('../Pages/NotificationManagment/PushNotificationPage'))
 const ViewUserDetail=React.lazy(()=>import("../Pages/UsersManagment/UserPage/UserDetailPage"))
 
 const routes = [
@@ -53,9 +60,14 @@ const routes = [
   { path: '/setup/country', name: 'countries', element: CountryPage },
   { path: '/setup/provider', name: 'providers', element: ProviderPage },
   { path: '/setup/relation', name: 'relations', element: RelationPage },
+  { path: '/setup/term&condition', name: 'terms&conditions', element: TermConditionPage },
+  { path: '/setup/faq', name: 'faq', element: FAQPage },
+  { path: '/setup/faq/create_question', name: 'create_question', element: CreateQuestionage },
+  { path: '/setup/faq/edit_question', name: 'edit_question', element: EditQuestionage },
+  
+  { path: '/NotificationManagement/push_notifications', name: 'push_notifications', element: PushNotificationPage },
+  { path: '/NotificationManagement/notifications', name: 'notifications', element: NotificationPage },
 
-
-  { path: '/NotificationManagement/push_notifications', name: 'push_notifications', element: NotificationPage },
 ]
 
 export default routes

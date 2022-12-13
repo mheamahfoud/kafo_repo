@@ -67,7 +67,7 @@ class Kernel extends HttpKernel
         'api_version' =>\App\Http\Middleware\APIversion::class,
         'user_accessible' => \App\Http\Middleware\UserAccessible::class,
         'user_activate_accessible' => \App\Http\Middleware\UserActivateAccessible::class,
-
-
+        'verify_mobile_number' => \App\Http\Middleware\VerifyMobileNumber::class,
+        
     ];
 }

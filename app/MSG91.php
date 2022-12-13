@@ -12,10 +12,15 @@ class MSG91 {
 
     }
 
-    private $API_KEY = 'API_KEY';
-    private $SENDER_ID = "VERIFY";
+    private $SENDER_ID = 'Kafo';
+    private $USER = "ppa277";
+    private $PASSWORD = "dnat121717";
+    private $LANG = 1;
     private $ROUTE_NO = 4;
     private $RESPONSE_TYPE = 'json';
+
+
+   
 
     public function sendSMS($OTP, $mobileNumber){
         $isError = 0;
@@ -27,15 +32,18 @@ class MSG91 {
 
         //Preparing post parameters
         $postData = array(
-            'authkey' => $this->API_KEY,
-            'mobiles' => $mobileNumber,
-            'message' => $message,
-            'sender' => $this->SENDER_ID,
-            'route' => $this->ROUTE_NO,
-            'response' => $this->RESPONSE_TYPE
+
+            
+            'User' => $this->USER,
+            'Pass' => $this->PASSWORD,
+            'From' => $this->SENDER_ID,
+            'Gsm' => $mobileNumber,
+            'Msg' => $OTP,
+           // 'route' => $this->ROUTE_NO,
+            //'response' => $this->RESPONSE_TYPE
         );
      
-        $url = "https://control.msg91.com/sendhttp.php";
+        $url = "https://services.mtnsyr.com:7443/General/MTNSERVICES/ConcatenatedSender.aspx";
      
         $ch = curl_init();
         curl_setopt_array($ch, array(
@@ -53,6 +61,9 @@ class MSG91 {
      
         //get response
         $output = curl_exec($ch);
+
+        echo json_encode($output);
+        die();
      
         //Print error if any
         if (curl_errno($ch)) {

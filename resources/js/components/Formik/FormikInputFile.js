@@ -83,14 +83,18 @@ export default function FormikInputFile({
             let data = new FormData();
             formData.append('images[]', img);
             uploadTempFile(formData).then((result) => {
-                setFieldValue(props.name, result.data.file_name);
+                if(result.success){
+                    setFieldValue(props.name, result.data.file_name);
+                    setUploadedImage(URL.createObjectURL(event.target.files[0]));
+                    setLoading(false)
+                }
                 // setFieldValue(props.name, [...values[props.name], result.data.file_name]);
             });
 
-            setUploadedImage(URL.createObjectURL(event.target.files[0]));
+          
         }
-        setLoading(false)
-        return;
+       
+      //  return;
     };
     useEffect(() => {
         if (image_url != undefined) {
@@ -177,16 +181,17 @@ export default function FormikInputFile({
                 </Box>
 
 
-                {(uploadedImage && <Box  >
+             
+
+
+                {!loading ? (uploadedImage && (<Box  >
                     <Image
                         src={uploadedImage}
                         thumbnail
                         style={{ width: '120px' }}
                     />
 
-                </Box>)}
-
-
+                </Box>)) : <CircularProgress style={{ color: mainColor,  }} />}
 
 
             </Box>
